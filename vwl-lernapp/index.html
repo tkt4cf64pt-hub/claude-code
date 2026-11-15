@@ -1,0 +1,588 @@
+<title>VWL Kurzarbeit Trainer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: single column app shell; sticky top bar; topic tiles -> reader -> quiz cards like a driving-theory trainer */
+:root{
+  --bg:#EEF2F4; --surface:#FFFFFF; --surface-2:#E3E9EC; --ink:#11262E; --muted:#5A6B72; --line:#CCD6DA;
+  --accent:#0B6E7A; --accent-ink:#FFFFFF; --accent-soft:#D5ECEE;
+  --ok:#1E8A4C; --ok-soft:#DDF2E5; --warn:#C98A06; --warn-soft:#FBF0D3; --bad:#C2372E; --bad-soft:#FBE1DE; --new:#9AA8AE;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1A1F; --surface:#15252B; --surface-2:#1C3038; --ink:#E5EEF0; --muted:#94A7AD; --line:#2A4049;
+  --accent:#3FB6C3; --accent-ink:#06191D; --accent-soft:#16383E;
+  --ok:#4CC27E; --ok-soft:#163A26; --warn:#E8B23A; --warn-soft:#3A2F12; --bad:#EE6B60; --bad-soft:#40201D; --new:#5D7279; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1A1F; --surface:#15252B; --surface-2:#1C3038; --ink:#E5EEF0; --muted:#94A7AD; --line:#2A4049;
+  --accent:#3FB6C3; --accent-ink:#06191D; --accent-soft:#16383E;
+  --ok:#4CC27E; --ok-soft:#163A26; --warn:#E8B23A; --warn-soft:#3A2F12; --bad:#EE6B60; --bad-soft:#40201D; --new:#5D7279; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.ans:focus-within,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0}
+.brand .mark{width:28px;height:28px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:14px}
+.top .sp{flex:1}
+.ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500}
+.ghost:hover{background:var(--surface-2)}
+
+main{padding-block:24px 64px}
+.view{display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.lead{color:var(--muted);margin:0;max-width:62ch}
+
+/* overall progress */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:14px}
+.hero h1{font-size:clamp(26px,5vw,34px);font-weight:800;letter-spacing:-.02em}
+.bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--surface-2)}
+.bar span{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.big{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:560px){.actions{grid-template-columns:1fr}}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.act:hover{border-color:var(--accent)}
+.act b{font-family:var(--f-display);font-size:17px}
+.act small{color:var(--muted);font-size:13px}
+.act.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.act.primary small{color:inherit;opacity:.85}
+.act[disabled]{opacity:.5;cursor:not-allowed}
+
+.topics{display:flex;flex-direction:column;gap:10px}
+.topic{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:44px 1fr;gap:4px 14px;align-items:start}
+.topic .num{grid-row:span 3;width:44px;height:44px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-family:var(--f-display);font-weight:800;font-size:20px;display:grid;place-items:center}
+.topic h3{font-size:18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.tag{font-family:var(--f-body);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--warn-soft);color:var(--warn)}
+.tag.read{background:var(--ok-soft);color:var(--ok)}
+.topic .meta{display:flex;align-items:center;gap:10px;min-width:0}
+.topic .meta .bar{flex:1;height:8px}
+.topic .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600;font-size:14px}
+.btn:hover{background:var(--surface-2)}
+.btn.solid{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.solid:hover{filter:brightness(1.08)}
+.btn.lg{padding:12px 20px;font-size:16px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* reader */
+.reader{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,4vw,32px)}
+.reader h2{font-size:clamp(24px,4.5vw,30px);font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.reader h4{font-family:var(--f-display);font-size:17px;margin:26px 0 8px}
+.reader p,.reader li{max-width:65ch}
+.reader ul{padding-left:20px;margin:6px 0}
+.reader li{margin:4px 0}
+.reader li::marker{color:var(--accent)}
+.merke{background:var(--accent-soft);border-radius:10px;padding:12px 16px;margin:14px 0}
+.merke::before{content:"Merke";display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:2px}
+.f{font-family:var(--f-mono);font-size:14px;background:var(--surface-2);padding:2px 6px;border-radius:5px;white-space:normal}
+.tbl{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:10px}
+.tbl table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+.tbl th,.tbl td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl th{background:var(--surface-2);font-weight:600}
+.tbl td:first-child{font-weight:600;color:var(--muted)}
+.num-t{font-variant-numeric:tabular-nums}
+.yes{color:var(--ok);font-weight:600}.no{color:var(--bad);font-weight:600}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+@media (max-width:560px){.pair{grid-template-columns:1fr}}
+.pair>div{border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:0}
+.pair b{display:block;font-family:var(--f-display)}
+.nav-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.qhead .big{font-size:14px}
+.prog{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--accent);transition:width .25s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.card .qtop{padding:18px 20px 6px;display:flex;flex-direction:column;gap:6px}
+.qmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.qtext{font-size:clamp(18px,3.4vw,21px);font-weight:600;line-height:1.35;margin:0}
+.hint{font-size:13px;color:var(--muted)}
+.answers{display:flex;flex-direction:column;gap:8px;padding:12px 20px 20px}
+.ans{display:grid;grid-template-columns:32px 1fr 24px;gap:12px;align-items:center;border:2px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--surface);transition:border-color .12s, background .12s}
+.ans:hover{border-color:var(--accent)}
+.ans input{position:absolute;opacity:0;pointer-events:none}
+.ans .letter{width:32px;height:32px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--f-mono);font-weight:500;font-size:14px}
+.ans.sel{border-color:var(--accent);background:var(--accent-soft)}
+.ans.sel .letter{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ans .res{font-weight:800;text-align:center}
+.locked .ans{cursor:default}
+.locked .ans:hover{border-color:var(--line)}
+.ans.right{border-color:var(--ok);background:var(--ok-soft)}
+.ans.right .letter{background:var(--ok);border-color:var(--ok);color:#fff}
+.ans.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.ans.wrong .letter{background:var(--bad);border-color:var(--bad);color:#fff}
+.ans.missed{border-color:var(--ok);border-style:dashed}
+.ans.missed .letter{border-color:var(--ok);color:var(--ok)}
+.feedback{margin:0 20px 20px;border-radius:10px;padding:12px 16px}
+.feedback.ok{background:var(--ok-soft)}
+.feedback.bad{background:var(--bad-soft)}
+.feedback b{display:block;font-family:var(--f-display);font-size:17px}
+.feedback.ok b{color:var(--ok)}.feedback.bad b{color:var(--bad)}
+.qfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.kbd{font-size:12px;color:var(--muted)}
+@media (max-width:560px){.kbd{display:none}}
+
+.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+@media (max-width:560px){.grid{grid-template-columns:repeat(5,1fr)}}
+.grid button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 0;font-family:var(--f-mono);font-size:13px}
+.grid button.done{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.grid button.cur{outline:2px solid var(--ink);outline-offset:1px}
+.grid button.r{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.grid button.w{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+
+.confirm{background:var(--warn-soft);border-radius:10px;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+
+.result{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.result .score{font-family:var(--f-display);font-weight:800;font-size:clamp(40px,10vw,64px);line-height:1;font-variant-numeric:tabular-nums}
+.stamp{font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:6px;border:2px solid}
+.stamp.pass{color:var(--ok);border-color:var(--ok)}
+.stamp.fail{color:var(--bad);border-color:var(--bad)}
+.review{display:flex;flex-direction:column;gap:12px}
+.rv{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:10px;padding:12px 16px}
+.rv p{margin:4px 0}
+.rv .c{color:var(--ok);font-weight:600}
+.rv .e{color:var(--muted);font-size:14px}
+.empty{color:var(--muted);text-align:center;padding:20px}
+.danger{color:var(--bad);border-color:var(--bad)}
+.foot{color:var(--muted);font-size:13px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <button class="brand" id="home-btn" type="button"><span class="mark">€</span>VWL-Trainer</button>
+    <span class="sp"></span>
+    <button class="ghost" id="nav-home" type="button">Übersicht</button>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+
+<script>
+/* ---------------- LERNINHALTE ---------------- */
+const TOPICS = [
+{ id:"t1", title:"Magisches Sechseck", star:true, html:`
+<p class="lead">Grundlage ist das <b>Stabilitätsgesetz von 1967 (§1 StabG)</b>. Ursprünglich gab es vier Ziele, das <b>magische Viereck</b>.</p>
+<h4>Die 4 Ziele aus dem Stabilitätsgesetz</h4>
+<ul><li>Hoher Beschäftigungsstand</li><li>Stabiles Preisniveau</li><li>Außenwirtschaftliches Gleichgewicht</li><li>Stetiges, angemessenes Wirtschaftswachstum</li></ul>
+<h4>+ 2 Ziele, die später dazukamen → Sechseck</h4>
+<ul><li>Gerechte Einkommens- &amp; Vermögensverteilung</li><li>Schutz der natürlichen Umwelt</li></ul>
+<div class="merke">„Magisch“, weil <b>nicht alle Ziele gleichzeitig erreichbar</b> sind. Das wäre wie Zauberei.</div>
+<h4>Zielkonflikte</h4>
+<ul>
+<li><b>Wachstum ↔ Umweltschutz</b>: mehr Produktion → mehr Ressourcenverbrauch / CO₂</li>
+<li><b>Vollbeschäftigung ↔ Preisstabilität</b>: mehr Jobs → mehr Nachfrage → Preise ↑</li>
+<li><b>Wachstum ↔ Preisstabilität</b>: Boom → Inflation</li>
+<li><b>Außenhandelsüberschuss ↔ Preisstabilität</b>: Nachfrage aus dem Ausland → Preise ↑</li></ul>
+<h4>Zielharmonie</h4>
+<ul><li><b>Wachstum ↔ Beschäftigung</b>: mehr Produktion → mehr Jobs</li></ul>`},
+{ id:"t2", title:"Ziele & Zielerreichung in Deutschland", html:`
+<p class="lead">Jedes Ziel wird über einen Indikator gemessen. 2019–2025 hat Deutschland keines der vier Ziele dauerhaft erreicht.</p>
+<div class="tbl"><table><thead><tr><th>Ziel</th><th>Indikator</th><th>Zielwert</th><th>2019–2025</th><th>erreicht?</th></tr></thead><tbody>
+<tr><td>Beschäftigung</td><td>Arbeitslosenquote</td><td class="num-t">&lt; 3 %</td><td class="num-t">5,0–6,3 % (↑)</td><td class="no">nein</td></tr>
+<tr><td>Wachstum</td><td>BIP-Wachstum</td><td class="num-t">2–3 %</td><td class="num-t">−4,1 bis 3,9 %</td><td class="no">nein (nur 2021)</td></tr>
+<tr><td>Preisniveau</td><td>Inflationsrate (VPI)</td><td class="num-t">knapp &lt; 2 %</td><td class="num-t">0,5–6,9 %</td><td class="no">nein (2022: 6,9)</td></tr>
+<tr><td>Außenwirtschaft</td><td>Außenbeitragsquote</td><td class="num-t">1–2 %</td><td class="num-t">2,5–5,6 %</td><td class="no">nein (zu hoch)</td></tr>
+</tbody></table></div>
+<h4>Kritik an den Indikatoren</h4>
+<ul>
+<li><b>ALQ</b>: Personen in privater Vermittlung, Umschulung/Weiterbildung, 1-€-Jobber und „Unvermittelbare“ fehlen. Ältere fehlen auch → Quote ist <b>zu niedrig</b>.</li>
+<li><b>BIP</b>: soziale Kosten und Umweltzerstörung fehlen.</li>
+<li><b>Inflation</b>: gefühlte ≠ gemessene Inflation. Der Warenkorb ist nach <b>Anteil am Einkommen</b> gewichtet, nicht nach Kaufhäufigkeit → teure, selten gekaufte Güter sind überbewertet.</li>
+<li><b>Außenhandelsüberschuss</b>: „Beggar-thy-Neighbor“ → Jobs und Wohlstand im Inland auf Kosten des Auslands.</li></ul>
+<h4>Formeln</h4>
+<ul>
+<li><span class="f">ALQ = Arbeitslose ÷ (Arbeitslose + Erwerbstätige) × 100</span></li>
+<li><span class="f">BIP = Produktionswert − Vorleistungen + (Gütersteuern − Subventionen)</span></li>
+<li><span class="f">Inflation = (Warenkorb neu − Warenkorb alt) ÷ Warenkorb alt × 100</span></li>
+<li><span class="f">Außenbeitragsquote = (Exporte − Importe) ÷ BIP × 100</span></li>
+<li><span class="f">Außenhandelsüberschuss = Exporte − Importe</span></li></ul>`},
+{ id:"t3", title:"Konjunkturzyklus", html:`
+<p class="lead">Ablauf: <b>Aufschwung → Hochkonjunktur → Abschwung (Rezession) → Depression</b> → wieder Aufschwung …</p>
+<h4>Kennzeichen der Phasen</h4>
+<ul>
+<li><b>Aufschwung</b>: Nachfrage ↑, Investitionen ↑, Produktion ↑, ALQ sinkt, Optimismus</li>
+<li><b>Hochkonjunktur (Boom)</b>: Kapazitäten voll ausgelastet, fast Vollbeschäftigung, Preise/Löhne/Zinsen ↑</li>
+<li><b>Abschwung</b>: Nachfrage ↓, Lager voll, Investitionen ↓, ALQ ↑</li>
+<li><b>Depression</b>: hohe ALQ, Insolvenzen ↑, niedrige Zinsen, Pessimismus</li></ul>
+<div class="pair">
+<div><b>Boom → Abschwung</b>Löhne/Preise/Zinsen ↑ → Kosten ↑ → Gewinne ↓<br>Inflation → Kaufkraft ↓ → Nachfrage ↓<br>Überkapazitäten → Investitionen ↓ → Entlassungen</div>
+<div><b>Tief → Aufschwung</b>Niedrige Zinsen → günstige Kredite<br>Notwendige Ersatzinvestitionen, leere Lager → Optimismus</div></div>
+<h4>Konjunkturindikatoren</h4>
+<ul>
+<li><b>Frühindikatoren</b>: Lagerbestände, Auftragseingänge, Gewinnerwartungen, Investitionsabsichten, Aktienindex</li>
+<li><b>Gegenwartsindikatoren</b>: Sparquote, reales BIP, Konsumausgaben, Auslastung des Produktionspotenzials, Kreditnachfrage</li>
+<li><b>Spätindikatoren</b>: Insolvenzen, ALQ, Steuereinnahmen, Preise, Löhne, Inflationsrate</li></ul>
+<div class="merke">Deutschland 2015 = <b>Aufschwung</b>: Konsum &amp; Investitionen ↑, ALQ niedrig/sinkend. Aber keine Vollbeschäftigung → noch keine Hochkonjunktur.</div>`},
+{ id:"t4", title:"Konjunkturtheorien", html:`
+<ul>
+<li><b>Unterkonsumtionstheorien</b>: Konsum zu gering, Löhne steigen langsamer als die Produktion, Reiche sparen mehr.</li>
+<li><b>Monetäre Theorien</b>: Geldmenge steuert → billige Kredite → Aufschwung → Preise ↑ → Zentralbank bremst → Abschwung.</li>
+<li><b>Überinvestitionstheorien</b>: zu viel investiert → Überproduktion, Angebot &gt; Nachfrage → Überkapazitäten werden abgebaut.</li>
+<li><b>Exogene Theorien</b>: Ursachen von außen, z. B. Krieg, Naturkatastrophen, Wahlen, Stimmung.</li>
+<li><b>Mathematische Modelle</b>: Konjunktur wird rechnerisch erklärt.</li></ul>
+<div class="merke">Fazit: Konjunkturanalyse ist „Glaubenssache“. Es gibt zu viele Faktoren → präzise Prognosen sind kaum möglich.</div>`},
+{ id:"t5", title:"Nachfrage- vs. Angebotspolitik", hot:true, html:`
+<div class="tbl"><table><thead><tr><th></th><th>Nachfragepolitik</th><th>Angebotspolitik</th></tr></thead><tbody>
+<tr><td>Ursprung</td><td>Keynes (Keynesianismus), Weltwirtschaftskrise 1930er</td><td>Neoklassik, Monetarismus nach Friedman (1970er)</td></tr>
+<tr><td>Staat</td><td>greift aktiv ein, Finanzpolitik</td><td>möglichst wenig Eingriffe</td></tr>
+<tr><td>Ziel</td><td>Konsumkraft ↑ → Nachfrage ↑</td><td>Produktionsbedingungen ↑ → Angebot ↑</td></tr>
+<tr><td>Markt</td><td>instabil</td><td>stabil</td></tr>
+<tr><td>Warum?</td><td>kurzfristig: unsichere Erwartungen; langfristig: Einkommen konzentriert sich → mehr Sparen</td><td>kurzfristig: Say'sches Theorem („Jedes Angebot schafft sich seine Nachfrage“); langfristig: Innovationen</td></tr>
+<tr><td>Investitionen hängen ab von</td><td>erwarteten Gewinnen bzw. erwarteter Konsumnachfrage</td><td>realen Gewinnen bzw. Vermögen</td></tr>
+<tr><td>Grund für Tiefphasen</td><td>Konsumnachfrage ↓</td><td>schlechte Rahmenbedingungen, Regulierung</td></tr>
+<tr><td>Ansatz</td><td>antizyklisch</td><td>Ordnungspolitik (Rahmenbedingungen schaffen)</td></tr>
+</tbody></table></div>
+<h4>Maßnahmen Nachfragepolitik</h4>
+<ul>
+<li><b>Tiefphase</b>: Staatsausgaben ↑ (auf Kredit, z. B. Straßenbau, Stromtrassen), Löhne/Subventionen/Prämien ↑, Steuern/Zinsen ↓</li>
+<li><b>Hochphase</b>: Staatsausgaben/Subventionen/Prämien ↓, Steuern/Zinsen ↑, Kredite tilgen, Rücklagen bilden</li></ul>
+<h4>Maßnahmen Angebotspolitik</h4>
+<ul><li>Staatskonsum ↓, keine bzw. kaum Neuverschuldung</li><li>Deregulierung, Unternehmenssteuern ↓</li><li>Investitionen &amp; Innovationen fördern</li><li>Wettbewerb fördern (weniger Subventionen und Monopole)</li><li>Lohnmäßigung (z. B. kein Mindestlohn)</li><li>Privaten Sektor ausweiten</li></ul>
+<h4>Kritik</h4>
+<div class="pair">
+<div><b>an der Nachfragepolitik</b>Kredite → Zinsen ↑ → private Investitionen ↓ (<b>Crowding-out</b>)<br>Staat reagiert zu langsam (<b>Time-lags</b>) → wirkt prozyklisch statt antizyklisch<br>Schulden werden im Boom nicht abgebaut → Staatsverschuldung ↑</div>
+<div><b>an der Angebotspolitik</b>Geht zulasten der Arbeitnehmer → Löhne ↓ → Konsum ↓<br>Inlandsnachfrage schwach → Exportfokus → Druck auf andere Länder → globale Nachfrageschwäche (Teufelskreis)</div></div>
+<h4>Chancen und Risiken</h4>
+<ul>
+<li><b>Nachfragepolitik</b>: Chance: fängt Schwankungen ab. Risiko: Fehler des Staates → schlimmere Rezession.</li>
+<li><b>Angebotspolitik</b>: Chance: Wirtschaft entwickelt sich frei. Risiko: kein Eingriff → schwere Rezessionen.</li></ul>
+<h4>Zuordnung der Positionen</h4>
+<ul>
+<li><b>Nachfragepolitik</b>: Volkseinkommen und Arbeitsmarkt werden durch die Nachfrage bestimmt; Staat greift ein „so viel wie nötig“; Staat muss Vollbeschäftigung sichern.</li>
+<li><b>Angebotspolitik</b>: privater Sektor ist stabil; keine Konjunkturpolitik nötig; Markt schafft Vollbeschäftigung; beste Investitionsbedingungen; Staat greift „so wenig wie möglich“ ein; Unternehmen investieren nur bei Absatz.</li></ul>
+<div class="merke">Angebotspolitik = <b>Trickle-Down-Effekt</b>, Investitionen als Motor.<br>Nachfragepolitik = <b>Nachfrage bestimmt das Angebot</b>.</div>
+<h4>Textaufgabe Wirtschaftsprogramm</h4>
+<p>Investitionen in Infrastruktur, Bildung und Forschung ↑, <b>keine neuen Schulden</b> → <b>angebotsorientiert</b>.</p>`},
+{ id:"t6", title:"Arbeitslosigkeit & Messung", html:`
+<ul>
+<li><span class="f">ALQ = Arbeitslose × 100 ÷ (Erwerbstätige + Arbeitslose)</span></li>
+<li>Gezählt werden nur <b>unfreiwillig</b> Arbeitslose.</li>
+<li>Freiwillig arbeitslos (nicht gezählt): Studenten, Rentner, Kindererziehung.</li>
+<li>Die ALQ zeigt <b>weniger</b> als tatsächlich.</li>
+<li><span class="f">Arbeitsangebot = Erwerbstätige + Arbeitslose</span></li>
+<li><span class="f">Arbeitsnachfrage = Erwerbstätige + offene Stellen</span></li></ul>
+<h4>Weitere Größen</h4>
+<ul>
+<li>Erwerbstätige ↑ → mehr Beschäftigung (<span class="f">Erwerbsquote = Erwerbspersonen ÷ Bevölkerung</span>)</li>
+<li>Kurzarbeit ↓ → positiv für den Arbeitsmarkt</li>
+<li>Offene Stellen ↑ → positiv für den Arbeitsmarkt</li></ul>
+<h4>„Arbeitslos“ laut Bundesagentur für Arbeit (§16 SGB III)</h4>
+<ul><li>Mindestens 15 Jahre alt</li><li>Beschäftigungslos oder unter 15 Wochenstunden</li><li>Sucht versicherungspflichtige Arbeit (ab 15 Stunden pro Woche)</li><li>Arbeitslos gemeldet</li><li>Steht der Vermittlung zur Verfügung</li><li>Nicht arbeitsunfähig krank</li></ul>
+<h4>Nicht als arbeitslos gezählt</h4>
+<ul><li>Teilnehmer an Maßnahmen (Umschulung)</li><li>Über 58-Jährige ohne Jobangebot</li><li>Aufstocker (ab 15 Stunden Arbeit)</li><li>Personen, die Kinder erziehen, Angehörige pflegen oder zur Schule gehen</li></ul>
+<h4>M3 – Jugendarbeitslosigkeit EU (August 2025, 15–24 Jahre)</h4>
+<ul>
+<li>Höchste: Estland 25,4 %, Schweden 24,4 %, Rumänien 23,5 %</li>
+<li>EU-27: 14,6 %, Eurozone: 14 %</li>
+<li>Niedrigste: <b>Deutschland 6,5 %</b> → steht solide da</li>
+<li>Äußere Einflüsse wie Corona und der Ukraine-Krieg spielen eine Rolle, besonders in den Eurokrisenländern (Griechenland, Portugal, Spanien).</li></ul>`}
+];
+
+/* ---------------- FRAGEN ----------------
+   t = Thema, q = Frage, a = Antworten, c = Indizes der richtigen Antworten, e = Erklärung */
+const QUESTIONS = [
+// t1
+{t:"t1",q:"Auf welchem Gesetz beruht das magische Viereck?",a:["Stabilitätsgesetz von 1967 (§1 StabG)","Grundgesetz von 1949","Sozialgesetzbuch III","Kartellgesetz von 1957"],c:[0],e:"Das Stabilitätsgesetz von 1967 nennt in §1 die vier Ziele des magischen Vierecks."},
+{t:"t1",q:"Welche Ziele gehören zum ursprünglichen magischen Viereck?",a:["Hoher Beschäftigungsstand","Gerechte Einkommens- und Vermögensverteilung","Stabiles Preisniveau","Außenwirtschaftliches Gleichgewicht"],c:[0,2,3],e:"Viereck: Beschäftigung, Preisniveau, Außenwirtschaft, Wachstum. Die Verteilung kam erst beim Sechseck dazu."},
+{t:"t1",q:"Welche zwei Ziele kamen später dazu, sodass aus dem Viereck ein Sechseck wurde?",a:["Gerechte Einkommens- und Vermögensverteilung","Ausgeglichener Staatshaushalt","Schutz der natürlichen Umwelt","Niedrige Zinsen"],c:[0,2],e:"Verteilungsgerechtigkeit und Umweltschutz ergänzen das Viereck zum Sechseck."},
+{t:"t1",q:"Warum heißt das Sechseck „magisch“?",a:["Weil nicht alle Ziele gleichzeitig erreichbar sind","Weil die Ziele sich von selbst erfüllen","Weil die Zentralbank die Ziele geheim festlegt"],c:[0],e:"Alle Ziele gleichzeitig zu erreichen wäre wie Zauberei."},
+{t:"t1",q:"Welche Zielbeziehungen sind Zielkonflikte?",a:["Wachstum ↔ Umweltschutz","Vollbeschäftigung ↔ Preisstabilität","Wachstum ↔ Beschäftigung","Außenhandelsüberschuss ↔ Preisstabilität"],c:[0,1,3],e:"Wachstum ↔ Beschäftigung ist eine Zielharmonie: mehr Produktion → mehr Jobs."},
+{t:"t1",q:"Welche Zielbeziehung ist eine Zielharmonie?",a:["Wachstum ↔ Umweltschutz","Wachstum ↔ Beschäftigung","Wachstum ↔ Preisstabilität"],c:[1],e:"Mehr Produktion braucht mehr Arbeitskräfte → mehr Jobs."},
+{t:"t1",q:"Warum stehen Vollbeschäftigung und Preisstabilität im Konflikt?",a:["Mehr Jobs → mehr Einkommen → mehr Nachfrage → Preise steigen","Mehr Jobs → weniger Produktion → Preise sinken","Arbeitslose kaufen mehr als Beschäftigte"],c:[0],e:"Mehr Beschäftigte haben mehr Geld zum Ausgeben. Die höhere Nachfrage treibt die Preise."},
+{t:"t1",q:"Warum gefährdet Wirtschaftswachstum den Umweltschutz?",a:["Mehr Produktion bedeutet mehr Ressourcenverbrauch und CO₂","Wachstum senkt die Steuereinnahmen für Umweltschutz","Bei Wachstum sinkt die Zahl der Erwerbstätigen"],c:[0],e:"Mehr Produktion → mehr Ressourcenverbrauch und Emissionen."},
+{t:"t1",q:"Wie gefährdet ein hoher Außenhandelsüberschuss die Preisstabilität?",a:["Die Nachfrage aus dem Ausland lässt die Preise im Inland steigen","Importe werden dadurch teurer verboten","Ein Überschuss senkt automatisch die Löhne"],c:[0],e:"Viel Nachfrage aus dem Ausland erhöht die Gesamtnachfrage → Preise ↑."},
+// t2
+{t:"t2",q:"Mit welchem Indikator misst man das Ziel „hoher Beschäftigungsstand“?",a:["Arbeitslosenquote","Inflationsrate","Außenbeitragsquote","BIP-Wachstum"],c:[0],e:"Beschäftigung → Arbeitslosenquote (ALQ)."},
+{t:"t2",q:"Welcher Zielwert gilt für das Preisniveau?",a:["Inflationsrate knapp unter 2 %","Inflationsrate von genau 0 %","Inflationsrate zwischen 2 und 3 %","Inflationsrate unter 5 %"],c:[0],e:"Stabiles Preisniveau = Inflation (VPI) knapp unter 2 %."},
+{t:"t2",q:"Welcher Zielwert gilt für die Arbeitslosenquote?",a:["unter 3 %","unter 6 %","unter 10 %"],c:[0],e:"Ziel ist eine ALQ unter 3 %. Deutschland lag 2019–2025 bei 5,0–6,3 %."},
+{t:"t2",q:"Welches BIP-Wachstum gilt als „stetig und angemessen“?",a:["1 %","2–3 %","5–6 %"],c:[1],e:"Zielwert für das Wachstum: 2–3 % pro Jahr."},
+{t:"t2",q:"Welcher Zielwert gilt für die Außenbeitragsquote?",a:["1–2 %","0 %","2,5–5,6 %"],c:[0],e:"Zielwert 1–2 %. Deutschland lag mit 2,5–5,6 % darüber, also zu hoch."},
+{t:"t2",q:"Welche Aussagen über Deutschland 2019–2025 sind richtig?",a:["Die Inflationsrate erreichte 2022 einen Wert von 6,9 %","Die ALQ lag zwischen 5,0 und 6,3 %","Die Außenbeitragsquote lag im Zielkorridor von 1–2 %","Das Wachstumsziel wurde nur 2021 erreicht"],c:[0,1,3],e:"Die Außenbeitragsquote lag mit 2,5–5,6 % über dem Zielwert."},
+{t:"t2",q:"Warum gilt das außenwirtschaftliche Ziel in Deutschland als verfehlt?",a:["Die Außenbeitragsquote ist zu hoch","Die Außenbeitragsquote ist negativ","Deutschland exportiert zu wenig"],c:[0],e:"2,5–5,6 % statt 1–2 % → zu hoher Überschuss."},
+{t:"t2",q:"Welche Kritikpunkte an der Arbeitslosenquote sind richtig?",a:["Personen in Umschulung oder Weiterbildung fehlen","1-€-Jobber fehlen","Ältere fehlen, dadurch ist die Quote zu niedrig","Rentner werden doppelt gezählt"],c:[0,1,2],e:"Viele Gruppen werden nicht gezählt. Die ALQ ist deshalb eher zu niedrig."},
+{t:"t2",q:"Was fehlt im BIP als Wohlstandsmaß?",a:["Soziale Kosten","Umweltzerstörung","Gütersteuern"],c:[0,1],e:"Soziale Kosten und Umweltzerstörung tauchen im BIP nicht auf. Gütersteuern sind Teil der Formel."},
+{t:"t2",q:"Was wird an der gemessenen Inflationsrate kritisiert?",a:["Gefühlte und gemessene Inflation weichen voneinander ab","Der Warenkorb wird nach Anteil am Einkommen gewichtet, nicht nach Kaufhäufigkeit","Teure, selten gekaufte Güter werden überbewertet","Lebensmittel sind nicht im Warenkorb enthalten"],c:[0,1,2],e:"Durch die Gewichtung nach Einkommensanteil zählen teure, seltene Käufe stark. Lebensmittel sind enthalten."},
+{t:"t2",q:"Was bedeutet „Beggar-thy-Neighbor“ beim Außenhandelsüberschuss?",a:["Jobs und Wohlstand im Inland entstehen auf Kosten des Auslands","Das Inland verschenkt Waren an Nachbarländer","Nachbarländer zahlen Zölle an das Inland"],c:[0],e:"Ein Überschuss bedeutet Defizite anderswo: Jobs im Inland auf Kosten des Auslands."},
+{t:"t2",q:"Wie berechnet man die Arbeitslosenquote?",a:["Arbeitslose ÷ (Arbeitslose + Erwerbstätige) × 100","Arbeitslose ÷ Bevölkerung × 100","Erwerbstätige ÷ Arbeitslose × 100"],c:[0],e:"ALQ = Arbeitslose ÷ (Arbeitslose + Erwerbstätige) × 100."},
+{t:"t2",q:"2,5 Mio. Arbeitslose, 42,5 Mio. Erwerbstätige. Wie hoch ist die ALQ?",a:["ca. 5,6 %","ca. 5,9 %","ca. 6,3 %"],c:[0],e:"2,5 ÷ (2,5 + 42,5) × 100 = 2,5 ÷ 45 × 100 ≈ 5,6 %."},
+{t:"t2",q:"Wie berechnet man das BIP?",a:["Produktionswert − Vorleistungen + (Gütersteuern − Subventionen)","Produktionswert + Vorleistungen − Gütersteuern","Exporte − Importe"],c:[0],e:"BIP = Produktionswert − Vorleistungen + (Gütersteuern − Subventionen)."},
+{t:"t2",q:"Der Warenkorb kostete 500 € und kostet jetzt 515 €. Wie hoch ist die Inflation?",a:["3 %","15 %","1,5 %"],c:[0],e:"(515 − 500) ÷ 500 × 100 = 3 %."},
+{t:"t2",q:"Exporte 1.800 Mrd. €, Importe 1.600 Mrd. €, BIP 4.000 Mrd. €. Wie hoch ist die Außenbeitragsquote?",a:["5 %","200 %","2 %"],c:[0],e:"(1.800 − 1.600) ÷ 4.000 × 100 = 5 %. Das läge über dem Zielwert von 1–2 %."},
+// t3
+{t:"t3",q:"Welche Reihenfolge der Konjunkturphasen ist richtig?",a:["Aufschwung → Hochkonjunktur → Abschwung → Depression","Aufschwung → Depression → Hochkonjunktur → Abschwung","Hochkonjunktur → Aufschwung → Depression → Abschwung"],c:[0],e:"Aufschwung → Hochkonjunktur (Boom) → Abschwung (Rezession) → Depression → …"},
+{t:"t3",q:"Woran erkennt man die Hochkonjunktur (Boom)?",a:["Kapazitäten sind voll ausgelastet","Fast Vollbeschäftigung","Zinsen sinken stark","Preise, Löhne und Zinsen steigen"],c:[0,1,3],e:"Im Boom steigen die Zinsen, sie sinken nicht."},
+{t:"t3",q:"Woran erkennt man eine Depression?",a:["Hohe Arbeitslosenquote","Insolvenzen nehmen zu","Niedrige Zinsen","Optimismus"],c:[0,1,2],e:"In der Depression herrscht Pessimismus."},
+{t:"t3",q:"Was kennzeichnet den Abschwung?",a:["Lager sind voll","Investitionen sinken","Die Arbeitslosenquote sinkt"],c:[0,1],e:"Im Abschwung steigt die ALQ."},
+{t:"t3",q:"Was kennzeichnet den Aufschwung?",a:["Nachfrage und Investitionen steigen","Die ALQ sinkt","Pessimismus","Lager sind voll"],c:[0,1],e:"Aufschwung: Nachfrage ↑, Investitionen ↑, Produktion ↑, ALQ ↓, Optimismus."},
+{t:"t3",q:"Warum geht ein Boom in den Abschwung über?",a:["Löhne, Preise und Zinsen steigen → Kosten ↑ → Gewinne ↓","Inflation → Kaufkraft ↓ → Nachfrage ↓","Überkapazitäten → Investitionen ↓ → Entlassungen","Niedrige Zinsen machen Kredite günstig"],c:[0,1,2],e:"Niedrige Zinsen helfen beim Übergang aus dem Tief in den Aufschwung."},
+{t:"t3",q:"Was führt aus dem Tief in den Aufschwung?",a:["Niedrige Zinsen → günstige Kredite","Notwendige Ersatzinvestitionen","Leere Lager → Optimismus","Steigende Insolvenzen"],c:[0,1,2],e:"Steigende Insolvenzen gehören zur Depression."},
+{t:"t3",q:"Welche Größen sind Frühindikatoren?",a:["Auftragseingänge","Aktienindex","Arbeitslosenquote","Gewinnerwartungen"],c:[0,1,3],e:"Die ALQ ist ein Spätindikator."},
+{t:"t3",q:"Welche Größen sind Spätindikatoren?",a:["Insolvenzen","Löhne","Lagerbestände","Steuereinnahmen"],c:[0,1,3],e:"Lagerbestände sind ein Frühindikator."},
+{t:"t3",q:"Welche Größen sind Gegenwartsindikatoren?",a:["Reales BIP","Konsumausgaben","Investitionsabsichten","Kreditnachfrage"],c:[0,1,3],e:"Investitionsabsichten zeigen die Zukunft → Frühindikator."},
+{t:"t3",q:"In welcher Phase befand sich Deutschland 2015?",a:["Aufschwung","Hochkonjunktur","Depression"],c:[0],e:"Konsum und Investitionen ↑, ALQ sinkend, aber keine Vollbeschäftigung → noch keine Hochkonjunktur."},
+{t:"t3",q:"Warum war Deutschland 2015 noch nicht in der Hochkonjunktur?",a:["Es gab keine Vollbeschäftigung","Die Investitionen sanken","Die Zinsen waren sehr hoch"],c:[0],e:"Für den Boom fehlte die (fast) Vollbeschäftigung."},
+// t4
+{t:"t4",q:"Was besagen Unterkonsumtionstheorien?",a:["Der Konsum ist zu gering","Löhne steigen langsamer als die Produktion","Reiche sparen mehr","Die Geldmenge steuert die Konjunktur"],c:[0,1,2],e:"Die Geldmenge gehört zu den monetären Theorien."},
+{t:"t4",q:"Welche Theorie beschreibt: billige Kredite → Aufschwung → Preise ↑ → Zentralbank bremst → Abschwung?",a:["Monetäre Theorie","Überinvestitionstheorie","Exogene Theorie"],c:[0],e:"Monetäre Theorien: Die Geldmenge steuert die Konjunktur."},
+{t:"t4",q:"Was besagen Überinvestitionstheorien?",a:["Es wird zu viel investiert → Überproduktion","Angebot > Nachfrage → Überkapazitäten werden abgebaut","Der Staat investiert zu wenig"],c:[0,1],e:"Zu viel Investition führt zu Überkapazitäten, die abgebaut werden müssen."},
+{t:"t4",q:"Welche Ursachen nennen exogene Konjunkturtheorien?",a:["Krieg","Naturkatastrophen","Wahlen","Lohnhöhe im Inland"],c:[0,1,2],e:"Exogen = von außen: Krieg, Naturkatastrophen, Wahlen, Stimmung."},
+{t:"t4",q:"Welches Fazit zieht man aus den Konjunkturtheorien?",a:["Präzise Prognosen sind kaum möglich, es gibt zu viele Faktoren","Die monetäre Theorie erklärt jeden Zyklus vollständig","Konjunkturzyklen lassen sich exakt vorhersagen"],c:[0],e:"Konjunkturanalyse ist „Glaubenssache“."},
+{t:"t4",q:"„Reiche sparen mehr, deshalb fehlt Nachfrage.“ Zu welcher Theorie passt das?",a:["Unterkonsumtionstheorie","Überinvestitionstheorie","Mathematisches Modell"],c:[0],e:"Zu wenig Konsum → Unterkonsumtion."},
+// t5
+{t:"t5",q:"Auf wen geht die Nachfragepolitik zurück?",a:["John Maynard Keynes","Milton Friedman","Jean-Baptiste Say"],c:[0],e:"Keynesianismus, entstanden in der Weltwirtschaftskrise der 1930er."},
+{t:"t5",q:"Worauf beruht die Angebotspolitik?",a:["Neoklassik","Monetarismus nach Friedman (1970er)","Keynesianismus"],c:[0,1],e:"Angebotspolitik: Neoklassik und Monetarismus."},
+{t:"t5",q:"„Jedes Angebot schafft sich seine Nachfrage.“ Wie heißt diese Aussage und zu welcher Politik gehört sie?",a:["Say'sches Theorem, Angebotspolitik","Say'sches Theorem, Nachfragepolitik","Crowding-out, Angebotspolitik"],c:[0],e:"Das Say'sche Theorem ist das kurzfristige Argument der Angebotspolitik."},
+{t:"t5",q:"Welche Aussagen passen zur Nachfragepolitik?",a:["Der Markt ist instabil","Der Staat greift aktiv ein","Der Ansatz ist antizyklisch","Der Staat greift so wenig wie möglich ein"],c:[0,1,2],e:"„So wenig wie möglich“ ist die Haltung der Angebotspolitik."},
+{t:"t5",q:"Welche Aussagen passen zur Angebotspolitik?",a:["Der Markt ist stabil","Ansatz: Ordnungspolitik (Rahmenbedingungen schaffen)","Ziel: Konsumkraft erhöhen","Staat greift möglichst wenig ein"],c:[0,1,3],e:"Konsumkraft erhöhen ist das Ziel der Nachfragepolitik."},
+{t:"t5",q:"Welche Maßnahmen ergreift die Nachfragepolitik in der Tiefphase?",a:["Staatsausgaben auf Kredit erhöhen, z. B. Straßenbau","Steuern und Zinsen senken","Kredite tilgen und Rücklagen bilden","Subventionen und Prämien erhöhen"],c:[0,1,3],e:"Kredite tilgen und Rücklagen bilden gehört in die Hochphase."},
+{t:"t5",q:"Welche Maßnahmen ergreift die Nachfragepolitik in der Hochphase?",a:["Steuern und Zinsen erhöhen","Rücklagen bilden und Kredite tilgen","Staatsausgaben auf Kredit erhöhen"],c:[0,1],e:"Antizyklisch: im Boom bremsen und sparen."},
+{t:"t5",q:"Welche Maßnahmen gehören zur Angebotspolitik?",a:["Deregulierung","Unternehmenssteuern senken","Staatsausgaben auf Kredit erhöhen","Lohnmäßigung, z. B. kein Mindestlohn"],c:[0,1,3],e:"Angebotspolitik will keine bzw. kaum Neuverschuldung."},
+{t:"t5",q:"Was versteht man unter Crowding-out?",a:["Der Staat nimmt Kredite auf → Zinsen ↑ → private Investitionen ↓","Ausländische Firmen verdrängen inländische","Maschinen verdrängen Arbeitskräfte"],c:[0],e:"Staatliche Kreditnachfrage verdrängt private Investitionen."},
+{t:"t5",q:"Warum wirkt Nachfragepolitik wegen Time-lags manchmal prozyklisch?",a:["Der Staat reagiert zu langsam, die Maßnahmen wirken erst in der falschen Phase","Der Staat reagiert zu schnell","Die Zentralbank hebt die Maßnahmen auf"],c:[0],e:"Wenn das Konjunkturprogramm erst im Aufschwung wirkt, verstärkt es den Boom."},
+{t:"t5",q:"Welche Kritikpunkte richten sich gegen die Nachfragepolitik?",a:["Crowding-out","Time-lags","Schulden werden im Boom nicht abgebaut","Lohnsenkungen schwächen den Konsum"],c:[0,1,2],e:"Lohnsenkungen → Konsum ↓ ist Kritik an der Angebotspolitik."},
+{t:"t5",q:"Welche Kritikpunkte richten sich gegen die Angebotspolitik?",a:["Geht zulasten der Arbeitnehmer → Löhne ↓ → Konsum ↓","Schwache Inlandsnachfrage → Exportfokus → Druck auf andere Länder","Staatsverschuldung steigt durch Konjunkturprogramme"],c:[0,1],e:"Steigende Staatsverschuldung ist Kritik an der Nachfragepolitik."},
+{t:"t5",q:"Wovon hängen Investitionen laut Nachfragepolitik ab?",a:["Von erwarteten Gewinnen bzw. erwarteter Konsumnachfrage","Von realen Gewinnen bzw. Vermögen","Nur vom Zinsniveau"],c:[0],e:"Angebotspolitik: reale Gewinne bzw. Vermögen."},
+{t:"t5",q:"Was ist laut Angebotspolitik der Grund für Tiefphasen?",a:["Schlechte Rahmenbedingungen und Regulierung","Zu geringe Konsumnachfrage","Zu hohe Staatsausgaben für Bildung"],c:[0],e:"Konsumnachfrage ↓ ist die Erklärung der Nachfragepolitik."},
+{t:"t5",q:"Warum ist der Markt laut Nachfragepolitik langfristig instabil?",a:["Einkommen konzentriert sich → es wird mehr gespart","Innovationen verdrängen alte Produkte","Jedes Angebot schafft sich seine Nachfrage"],c:[0],e:"Kurzfristig: unsichere Erwartungen; langfristig: Einkommenskonzentration → mehr Sparen."},
+{t:"t5",q:"Der Trickle-Down-Effekt ist ein Merkwort für …",a:["die Angebotspolitik","die Nachfragepolitik","die Unterkonsumtionstheorie"],c:[0],e:"Angebotspolitik = Trickle-Down, Investitionen als Motor."},
+{t:"t5",q:"Ein Wirtschaftsprogramm will Investitionen in Infrastruktur, Bildung und Forschung erhöhen, ohne neue Schulden. Wie ist es einzuordnen?",a:["Angebotsorientiert","Nachfrageorientiert","Weder noch"],c:[0],e:"Investitionsbedingungen verbessern und keine neuen Schulden → angebotsorientiert."},
+{t:"t5",q:"„Der Staat muss Vollbeschäftigung sichern.“ Welche Position ist das?",a:["Nachfragepolitik","Angebotspolitik"],c:[0],e:"Angebotspolitik: Der Markt schafft die Vollbeschäftigung selbst."},
+{t:"t5",q:"Welches Risiko hat die Nachfragepolitik?",a:["Fehler des Staates können die Rezession verschlimmern","Ohne Eingriffe kommt es zu schweren Rezessionen","Die Wirtschaft entwickelt sich zu frei"],c:[0],e:"„Kein Eingriff → schwere Rezessionen“ ist das Risiko der Angebotspolitik."},
+{t:"t5",q:"Welche Chance hat die Angebotspolitik?",a:["Die Wirtschaft entwickelt sich frei","Sie fängt Konjunkturschwankungen ab","Sie erhöht direkt die Löhne"],c:[0],e:"Schwankungen abfangen ist die Chance der Nachfragepolitik."},
+// t6
+{t:"t6",q:"Wer gilt laut §16 SGB III als arbeitslos?",a:["Wer mindestens 15 Jahre alt ist","Wer arbeitslos gemeldet ist","Wer 20 Stunden pro Woche arbeitet","Wer nicht arbeitsunfähig krank ist"],c:[0,1,3],e:"Arbeitslos ist nur, wer unter 15 Wochenstunden arbeitet."},
+{t:"t6",q:"Ab wie vielen Wochenstunden Arbeit gilt man nicht mehr als arbeitslos?",a:["Ab 15 Stunden","Ab 10 Stunden","Ab 20 Stunden"],c:[0],e:"Beschäftigungslos oder unter 15 Wochenstunden → arbeitslos."},
+{t:"t6",q:"Wer wird NICHT als arbeitslos gezählt?",a:["Teilnehmer an einer Umschulung","Über 58-Jährige ohne Jobangebot","Aufstocker mit 15 Stunden Arbeit","Gemeldete 30-Jährige ohne Job, die Arbeit suchen"],c:[0,1,2],e:"Die 30-jährige gemeldete Person erfüllt alle Kriterien und wird gezählt."},
+{t:"t6",q:"Wie berechnet man das Arbeitsangebot?",a:["Erwerbstätige + Arbeitslose","Erwerbstätige + offene Stellen","Arbeitslose − offene Stellen"],c:[0],e:"Arbeitsangebot kommt von den Menschen: Erwerbstätige + Arbeitslose."},
+{t:"t6",q:"Wie berechnet man die Arbeitsnachfrage?",a:["Erwerbstätige + offene Stellen","Erwerbstätige + Arbeitslose","Offene Stellen − Arbeitslose"],c:[0],e:"Arbeitsnachfrage kommt von den Unternehmen: besetzte + offene Stellen."},
+{t:"t6",q:"Wer ist „freiwillig arbeitslos“ und wird nicht gezählt?",a:["Studenten","Rentner","Personen in Kindererziehung","Gemeldete Arbeitsuchende"],c:[0,1,2],e:"Nur unfreiwillig Arbeitslose werden gezählt."},
+{t:"t6",q:"Welche Entwicklungen sind positiv für den Arbeitsmarkt?",a:["Kurzarbeit sinkt","Offene Stellen steigen","Erwerbstätige steigen","Erwerbstätige sinken"],c:[0,1,2],e:"Weniger Kurzarbeit, mehr offene Stellen, mehr Erwerbstätige → positiv."},
+{t:"t6",q:"Zeigt die ALQ eher mehr oder weniger Arbeitslosigkeit als tatsächlich?",a:["Weniger als tatsächlich","Mehr als tatsächlich","Genau die tatsächliche"],c:[0],e:"Viele Gruppen fallen heraus → die ALQ ist zu niedrig."},
+{t:"t6",q:"Wie hoch war die Jugendarbeitslosigkeit in Deutschland im August 2025?",a:["6,5 %","14,6 %","25,4 %"],c:[0],e:"Deutschland hatte mit 6,5 % die niedrigste Quote. 14,6 % = EU-27, 25,4 % = Estland."},
+{t:"t6",q:"Welches Land hatte im August 2025 die höchste Jugendarbeitslosigkeit in der EU?",a:["Estland","Spanien","Deutschland"],c:[0],e:"Estland 25,4 %, dann Schweden 24,4 % und Rumänien 23,5 %."},
+{t:"t6",q:"Wie hoch war die Jugendarbeitslosigkeit in der EU-27 (August 2025)?",a:["14,6 %","6,5 %","24,4 %"],c:[0],e:"EU-27: 14,6 %, Eurozone: 14 %."},
+{t:"t6",q:"Welche äußeren Einflüsse spielen bei der Jugendarbeitslosigkeit eine Rolle?",a:["Corona","Ukraine-Krieg","Mindestalter von 15 Jahren"],c:[0,1],e:"Besonders betroffen sind die Eurokrisenländer Griechenland, Portugal und Spanien."}
+];
+QUESTIONS.forEach((q,i)=>q.id="q"+i);
+
+/* ---------------- STATE ---------------- */
+const KEY="vwl-kurzarbeit-v1";
+let S={st:{},read:{},exams:[]};
+try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+// status: 0 neu, 1 falsch, 2 einmal richtig, 3 sicher (2x richtig in Folge)
+function status(id){const s=S.st[id]; if(!s) return 0; if(s.last===false) return 1; return s.streak>=2?3:2;}
+function record(id,ok){const s=S.st[id]||{streak:0}; s.streak=ok?(s.streak||0)+1:0; s.last=ok; S.st[id]=s;}
+const COLORS=["var(--new)","var(--bad)","var(--warn)","var(--ok)"];
+const LABELS=["neu","falsch","1× richtig","sicher"];
+function counts(list){const c=[0,0,0,0]; list.forEach(q=>c[status(q.id)]++); return c;}
+function barHTML(c){const n=c.reduce((a,b)=>a+b,0)||1; return `<div class="bar" aria-hidden="true">${[3,2,1,0].map(k=>`<span style="width:${c[k]/n*100}%;background:${COLORS[k]}"></span>`).join("")}</div>`;}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const esc=s=>s.replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+const app=document.getElementById("app");
+let view=null; // current interactive session
+let resetArmed=false;
+
+/* ---------------- HOME ---------------- */
+function home(){
+  view=null;
+  const c=counts(QUESTIONS), total=QUESTIONS.length, wrong=c[1];
+  const last=S.exams[S.exams.length-1];
+  app.innerHTML=`<div class="view">
+  <section class="hero">
+    <span class="eyebrow">Spickzettel VWL · Kurzarbeit</span>
+    <h1>Erst lernen, dann abfragen lassen.</h1>
+    <p class="lead">Lies dir ein Thema durch und übe danach die Fragen. Eine Frage gilt als <b>sicher</b>, wenn du sie zweimal hintereinander richtig beantwortet hast.</p>
+    ${barHTML(c)}
+    <div class="legend">${[3,2,1,0].map(k=>`<span><i style="background:${COLORS[k]}"></i>${c[k]} ${LABELS[k]}</span>`).join("")}</div>
+    <span class="big">${c[3]} von ${total} Fragen sicher${last?` · letzte Prüfung: ${last.score}/${last.n} ${last.score/last.n>=.8?"bestanden":"nicht bestanden"}`:""}</span>
+  </section>
+  <div class="actions">
+    <button class="act primary" id="go-all"><b>Alle Fragen üben</b><small>Unsichere Fragen zuerst</small></button>
+    <button class="act" id="go-wrong" ${wrong?"":"disabled"}><b>Fehler wiederholen</b><small>${wrong?wrong+" falsch beantwortete Fragen":"Gerade keine Fehler"}</small></button>
+    <button class="act" id="go-exam"><b>Prüfungssimulation</b><small>20 Fragen · bestanden ab 80 %</small></button>
+  </div>
+  <span class="eyebrow">Themen</span>
+  <div class="topics">${TOPICS.map((t,i)=>{const qs=QUESTIONS.filter(q=>q.t===t.id), tc=counts(qs);
+    return `<article class="topic"><div class="num">${i+1}</div>
+    <h3>${t.title}${t.hot?' <span class="tag">Schwerpunkt</span>':""}${t.star?' <span class="tag">wichtig</span>':""}${S.read[t.id]?' <span class="tag read">gelesen</span>':""}</h3>
+    <div class="meta">${barHTML(tc)}<span class="big">${tc[3]}/${qs.length}</span></div>
+    <div class="btns"><button class="btn" data-learn="${t.id}">Lernen</button><button class="btn solid" data-practice="${t.id}">${qs.length} Fragen üben</button></div></article>`;}).join("")}</div>
+  <div class="foot">Dein Fortschritt wird nur in diesem Browser gespeichert. <button class="ghost ${resetArmed?"danger":""}" id="reset">${resetArmed?"Wirklich alles zurücksetzen?":"Fortschritt zurücksetzen"}</button></div>
+  </div>`;
+  app.querySelector("#go-all").onclick=()=>practice(QUESTIONS,"Alle Fragen");
+  app.querySelector("#go-wrong").onclick=()=>wrong&&practice(QUESTIONS.filter(q=>status(q.id)===1),"Fehler wiederholen");
+  app.querySelector("#go-exam").onclick=exam;
+  app.querySelectorAll("[data-learn]").forEach(b=>b.onclick=()=>learn(b.dataset.learn));
+  app.querySelectorAll("[data-practice]").forEach(b=>b.onclick=()=>{const t=TOPICS.find(x=>x.id===b.dataset.practice);practice(QUESTIONS.filter(q=>q.t===t.id),t.title);});
+  app.querySelector("#reset").onclick=()=>{if(!resetArmed){resetArmed=true;home();return;} S={st:{},read:{},exams:[]};save();resetArmed=false;home();};
+  resetArmed=false;
+}
+
+/* ---------------- LEARN ---------------- */
+function learn(id){
+  view=null;
+  const i=TOPICS.findIndex(t=>t.id===id), t=TOPICS[i], next=TOPICS[i+1];
+  S.read[id]=true; save();
+  app.innerHTML=`<div class="view">
+  <article class="reader"><span class="eyebrow">Thema ${i+1} von ${TOPICS.length}</span><h2>${t.title}</h2>${t.html}</article>
+  <div class="nav-row">
+    <button class="btn" id="back">Zur Übersicht</button>
+    <span style="display:flex;gap:8px;flex-wrap:wrap">${next?`<button class="btn" id="next">Weiter: ${next.title}</button>`:""}
+    <button class="btn solid" id="quiz">Jetzt abfragen</button></span>
+  </div></div>`;
+  scrollTo(0,0);
+  app.querySelector("#back").onclick=home;
+  if(next) app.querySelector("#next").onclick=()=>learn(next.id);
+  app.querySelector("#quiz").onclick=()=>practice(QUESTIONS.filter(q=>q.t===id),t.title);
+}
+
+/* ---------------- QUESTION CARD ---------------- */
+function prepare(q){return {q, order:shuffle(q.a.map((_,i)=>i)), sel:new Set(), checked:false};}
+function isCorrect(item){const c=item.q.c; return item.sel.size===c.length && c.every(x=>item.sel.has(x));}
+function cardHTML(item,{reveal}){
+  const q=item.q, t=TOPICS.find(x=>x.id===q.t), st=status(q.id), multi=q.c.length>1;
+  const ok=reveal&&isCorrect(item);
+  return `<div class="card ${reveal?"locked":""}">
+  <div class="qtop"><div class="qmeta"><span class="dot" style="background:${COLORS[st]}"></span>${LABELS[st]} · ${t.title}</div>
+  <p class="qtext">${esc(q.q)}</p><span class="hint">${multi?"Mehrere Antworten sind richtig.":"Eine Antwort ist richtig."}</span></div>
+  <div class="answers" role="group">${item.order.map((ai,k)=>{
+    const sel=item.sel.has(ai), right=q.c.includes(ai);
+    let cls=sel?"sel":"", mark="";
+    if(reveal){ if(sel&&right){cls="right";mark="✓";} else if(sel&&!right){cls="wrong";mark="✗";} else if(right){cls="missed";mark="✓";} else cls=""; }
+    return `<label class="ans ${cls}"><input type="checkbox" data-ai="${ai}" ${sel?"checked":""} ${reveal?"disabled":""}><span class="letter">${"ABCD"[k]}</span><span>${esc(q.a[ai])}</span><span class="res" style="color:${cls==="wrong"?"var(--bad)":"var(--ok)"}">${mark}</span></label>`;}).join("")}</div>
+  ${reveal?`<div class="feedback ${ok?"ok":"bad"}"><b>${ok?"Richtig!":"Leider falsch."}</b>${esc(q.e)}</div>`:""}
+  </div>`;
+}
+function bindAnswers(item,rerender){
+  app.querySelectorAll(".ans input").forEach(inp=>inp.onchange=()=>{const ai=+inp.dataset.ai; inp.checked?item.sel.add(ai):item.sel.delete(ai); rerender();});
+}
+
+/* ---------------- PRACTICE ---------------- */
+function practice(list,title){
+  if(!list.length) return home();
+  // unsichere zuerst: falsch, neu, 1x richtig, sicher
+  const rank=[1,0,2,3];
+  const ordered=shuffle(list).sort((a,b)=>rank.indexOf(status(a.id))-rank.indexOf(status(b.id)));
+  view={mode:"practice",title,items:ordered.map(prepare),i:0,right:0};
+  renderPractice();
+}
+function renderPractice(){
+  const v=view, item=v.items[v.i], n=v.items.length;
+  app.innerHTML=`<div class="view">
+  <div class="qhead"><span class="eyebrow">${esc(v.title)}</span><span class="big">Frage ${v.i+1} / ${n} · ${v.right} richtig</span></div>
+  <div class="prog"><span style="width:${(v.i+(item.checked?1:0))/n*100}%"></span></div>
+  ${cardHTML(item,{reveal:item.checked})}
+  <div class="qfoot"><button class="btn" id="quit">Beenden</button><span class="kbd">Tasten: A–D wählen · Enter prüfen/weiter</span>
+  ${item.checked?`<button class="btn solid lg" id="next">${v.i+1<n?"Weiter":"Auswertung"}</button>`:`<button class="btn solid lg" id="check" ${item.sel.size?"":"disabled"}>Antwort prüfen</button>`}</div>
+  </div>`;
+  if(!item.checked) bindAnswers(item,renderPractice);
+  app.querySelector("#quit").onclick=()=>v.i>0||item.checked?practiceDone():home();
+  const c=app.querySelector("#check"); if(c) c.onclick=checkPractice;
+  const nx=app.querySelector("#next"); if(nx) nx.onclick=nextPractice;
+}
+function checkPractice(){const it=view.items[view.i]; if(!it.sel.size||it.checked) return; it.checked=true; const ok=isCorrect(it); record(it.q.id,ok); if(ok) view.right++; save(); renderPractice();}
+function nextPractice(){ if(view.i+1<view.items.length){view.i++; renderPractice(); scrollTo(0,0);} else practiceDone(); }
+function practiceDone(){
+  const v=view, done=v.items.filter(x=>x.checked), wrong=done.filter(x=>!isCorrect(x));
+  view=null;
+  app.innerHTML=`<div class="view">
+  <section class="result"><span class="eyebrow">${esc(v.title)} · Auswertung</span>
+  <div class="score">${v.right}/${done.length}</div>
+  <p class="lead">${done.length===0?"Du hast noch keine Frage beantwortet.":wrong.length?`${wrong.length} Fragen waren falsch. Sie landen unter „Fehler wiederholen“.`:"Alles richtig. Stark!"}</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    ${wrong.length?`<button class="btn solid" id="again">Falsche nochmal üben</button>`:""}
+    <button class="btn" id="home">Zur Übersicht</button></div></section>
+  ${reviewHTML(wrong)}</div>`;
+  scrollTo(0,0);
+  app.querySelector("#home").onclick=home;
+  const a=app.querySelector("#again"); if(a) a.onclick=()=>practice(wrong.map(x=>x.q),v.title+" · Fehler");
+}
+function reviewHTML(items){
+  if(!items.length) return "";
+  return `<span class="eyebrow">Das solltest du dir nochmal ansehen</span><div class="review">${items.map(it=>`<div class="rv"><p><b>${esc(it.q.q)}</b></p>
+  <p>Deine Antwort: ${it.sel.size?[...it.sel].map(i=>esc(it.q.a[i])).join("; "):"<i>keine</i>"}</p>
+  <p class="c">Richtig: ${it.q.c.map(i=>esc(it.q.a[i])).join("; ")}</p><p class="e">${esc(it.q.e)}</p></div>`).join("")}</div>`;
+}
+
+/* ---------------- EXAM ---------------- */
+function exam(){
+  const per={t1:3,t2:4,t3:3,t4:2,t5:5,t6:3}; // 20 Fragen, Schwerpunkt Thema 5
+  let pick=[]; for(const t in per) pick=pick.concat(shuffle(QUESTIONS.filter(q=>q.t===t)).slice(0,per[t]));
+  view={mode:"exam",items:shuffle(pick).map(prepare),i:0,confirm:false};
+  renderExam();
+}
+function renderExam(){
+  const v=view, item=v.items[v.i], n=v.items.length, answered=v.items.filter(x=>x.sel.size).length;
+  app.innerHTML=`<div class="view">
+  <div class="qhead"><span class="eyebrow">Prüfungssimulation</span><span class="big">${answered} / ${n} beantwortet</span></div>
+  <div class="grid">${v.items.map((x,k)=>`<button data-go="${k}" class="${x.sel.size?"done":""} ${k===v.i?"cur":""}" aria-label="Frage ${k+1}">${k+1}</button>`).join("")}</div>
+  ${cardHTML(item,{reveal:false})}
+  <div class="qfoot"><button class="btn" id="prev" ${v.i?"":"disabled"}>Zurück</button>
+  <button class="btn" id="submit">Abgeben</button>
+  <button class="btn solid lg" id="next" ${v.i+1<n?"":"disabled"}>Weiter</button></div>
+  ${v.confirm?`<div class="confirm"><span>${answered<n?`Noch ${n-answered} Fragen offen. `:""}Prüfung wirklich abgeben?</span><span style="display:flex;gap:8px"><button class="btn" id="cancel">Weiter bearbeiten</button><button class="btn solid" id="really">Abgeben</button></span></div>`:""}
+  </div>`;
+  bindAnswers(item,renderExam);
+  app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{v.i=+b.dataset.go;v.confirm=false;renderExam();});
+  app.querySelector("#prev").onclick=()=>{if(v.i){v.i--;renderExam();}};
+  app.querySelector("#next").onclick=()=>{if(v.i+1<n){v.i++;renderExam();}};
+  app.querySelector("#submit").onclick=()=>{v.confirm=true;renderExam();};
+  const c=app.querySelector("#cancel"); if(c) c.onclick=()=>{v.confirm=false;renderExam();};
+  const r=app.querySelector("#really"); if(r) r.onclick=examDone;
+}
+function examDone(){
+  const v=view; view=null;
+  v.items.forEach(it=>record(it.q.id,isCorrect(it)));
+  const score=v.items.filter(isCorrect).length, n=v.items.length, pass=score/n>=.8;
+  S.exams.push({score,n,at:Date.now()}); save();
+  const wrong=v.items.filter(x=>!isCorrect(x));
+  app.innerHTML=`<div class="view">
+  <section class="result"><span class="eyebrow">Prüfungsergebnis</span>
+  <span class="stamp ${pass?"pass":"fail"}">${pass?"Bestanden":"Nicht bestanden"}</span>
+  <div class="score">${score}/${n}</div>
+  <p class="lead">${Math.round(score/n*100)} % richtig. Zum Bestehen brauchst du mindestens ${Math.ceil(n*.8)} richtige Antworten.</p>
+  <div class="grid" style="width:100%">${v.items.map((x,k)=>`<button disabled class="${isCorrect(x)?"r":"w"}">${k+1}</button>`).join("")}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${wrong.length?`<button class="btn solid" id="again">Fehler üben</button>`:""}<button class="btn" id="new">Neue Prüfung</button><button class="btn" id="home">Zur Übersicht</button></div></section>
+  ${reviewHTML(wrong)}</div>`;
+  scrollTo(0,0);
+  app.querySelector("#home").onclick=home;
+  app.querySelector("#new").onclick=exam;
+  const a=app.querySelector("#again"); if(a) a.onclick=()=>practice(wrong.map(x=>x.q),"Prüfungsfehler");
+}
+
+/* ---------------- KEYBOARD ---------------- */
+document.addEventListener("keydown",e=>{
+  if(!view||e.metaKey||e.ctrlKey||e.altKey) return;
+  const item=view.items[view.i], k=e.key.toLowerCase();
+  const idx="abcd".indexOf(k)>=0?"abcd".indexOf(k):"1234".indexOf(k);
+  if(idx>=0 && idx<item.order.length && !item.checked){
+    const ai=item.order[idx]; item.sel.has(ai)?item.sel.delete(ai):item.sel.add(ai);
+    view.mode==="exam"?renderExam():renderPractice(); e.preventDefault();
+  } else if(k==="enter" && view.mode==="practice" && !(e.target.tagName==="BUTTON")){
+    item.checked?nextPractice():checkPractice(); e.preventDefault();
+  } else if(view.mode==="exam" && (k==="arrowright"||k==="arrowleft")){
+    view.i=Math.max(0,Math.min(view.items.length-1,view.i+(k==="arrowright"?1:-1))); renderExam();
+  }
+});
+document.getElementById("home-btn").onclick=home;
+document.getElementById("nav-home").onclick=home;
+home();
+</script>
