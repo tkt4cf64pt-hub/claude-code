@@ -133,8 +133,8 @@ main{padding-block:24px 64px}
 .feedback{margin:0 20px 20px;border-radius:10px;padding:12px 16px}
 .feedback.ok{background:var(--ok-soft)}
 .feedback.bad{background:var(--bad-soft)}
-.feedback b{display:block;font-family:var(--f-display);font-size:17px}
-.feedback.ok b{color:var(--ok)}.feedback.bad b{color:var(--bad)}
+.feedback>b:first-child{display:block;font-family:var(--f-display);font-size:17px}
+.feedback.ok>b:first-child{color:var(--ok)}.feedback.bad>b:first-child{color:var(--bad)}
 .qfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
 .kbd{font-size:12px;color:var(--muted)}
 @media (max-width:560px){.kbd{display:none}}
@@ -163,6 +163,67 @@ main{padding-block:24px 64px}
 .danger{color:var(--bad);border-color:var(--bad)}
 .foot{color:var(--muted);font-size:13px;text-align:center}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* --- neue Aufgabentypen --- */
+.pill{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--surface-2);color:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0;padding:0;list-style:none;counter-reset:s}
+@media (max-width:640px){.steps{grid-template-columns:1fr}}
+.steps li{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);counter-increment:s}
+.steps li b{display:block;color:var(--ink);font-family:var(--f-display);font-size:15px}
+.steps li b::before{content:counter(s) " ";color:var(--accent)}
+.kinds{display:flex;flex-wrap:wrap;gap:8px}
+.kinds .btn small{color:var(--muted);font-weight:500;margin-left:4px}
+.cloze{padding:12px 20px 20px;font-size:17px;line-height:2.3;margin:0}
+.gap{font:inherit;font-size:16px;border:0;border-bottom:2px solid var(--accent);background:var(--accent-soft);color:var(--ink);padding:2px 6px;border-radius:4px 4px 0 0;max-width:100%;line-height:1.4}
+.gap:focus{outline:none;background:var(--surface-2)}
+.blank{padding:2px 6px;border-radius:4px;font-weight:600}
+.blank.ok{background:var(--ok-soft);color:var(--ok)}
+.blank.bad{background:var(--bad-soft);color:var(--ok)}
+.blank.bad s{color:var(--bad);font-weight:500;margin-right:6px}
+.calc{padding:12px 20px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.calc input{font-family:var(--f-mono);font-size:20px;width:170px;max-width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.calc input:focus{outline:none;border-color:var(--accent)}
+.calc .unit{font-family:var(--f-mono);font-size:18px;color:var(--muted)}
+.calc input.ok{border-color:var(--ok);background:var(--ok-soft)}
+.calc input.bad{border-color:var(--bad);background:var(--bad-soft)}
+.sortlist,.ordlist{padding:12px 20px 20px;display:flex;flex-direction:column;gap:8px}
+.srow{border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:14px}
+.chip:hover{border-color:var(--accent)}
+.chip.sel{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.chip.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.chip.should{border-color:var(--ok);color:var(--ok);border-style:dashed}
+.locked .chip{cursor:default}
+.orow{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;border:2px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.orow .pos{width:32px;height:32px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;font-family:var(--f-mono);font-size:14px}
+.orow small{display:block;color:var(--muted);font-size:12px}
+.mv{display:flex;gap:4px}
+.mv button{width:38px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:16px}
+.mv button:hover:not([disabled]){background:var(--surface-2)}
+.mv button[disabled]{opacity:.35;cursor:default}
+.orow.ok{border-color:var(--ok);background:var(--ok-soft)}
+.orow.bad{border-color:var(--bad);background:var(--bad-soft)}
+.writebox{padding:12px 20px 20px;display:flex;flex-direction:column;gap:12px}
+.writebox textarea{width:100%;min-height:160px;font:inherit;padding:12px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);resize:vertical}
+.writebox textarea:focus{outline:none;border-color:var(--accent)}
+.writebox textarea[disabled]{opacity:.85}
+.model{background:var(--accent-soft);border-radius:10px;padding:12px 16px}
+.lbl{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:4px}
+.checklist{border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
+.checklist input{width:20px;height:20px;accent-color:var(--ok);margin-top:2px;flex:none}
+.checklist .auto{font-size:12px;color:var(--muted)}
+.flash{min-height:260px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px;padding:28px 20px;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);width:100%}
+.flash .front{font-family:var(--f-display);font-size:clamp(22px,5vw,30px);font-weight:800;line-height:1.2}
+.flash .back{font-size:17px;max-width:52ch;border-top:1px solid var(--line);padding-top:14px}
+.flash .tap{color:var(--muted);font-size:13px}
+.flash.flipped{border-color:var(--accent)}
+.fcbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fcbtns .no-btn{border-color:var(--bad);color:var(--bad)}
+.fcbtns .yes-btn{background:var(--ok);border-color:var(--ok);color:#fff}
+.feedback.part{background:var(--warn-soft)}
+.feedback.part>b:first-child{color:var(--warn)}
 </style>
 
 <header class="top">
@@ -380,14 +441,153 @@ const QUESTIONS = [
 {t:"t6",q:"Wie hoch war die Jugendarbeitslosigkeit in der EU-27 (August 2025)?",a:["14,6 %","6,5 %","24,4 %"],c:[0],e:"EU-27: 14,6 %, Eurozone: 14 %."},
 {t:"t6",q:"Welche äußeren Einflüsse spielen bei der Jugendarbeitslosigkeit eine Rolle?",a:["Corona","Ukraine-Krieg","Mindestalter von 15 Jahren"],c:[0,1],e:"Besonders betroffen sind die Eurokrisenländer Griechenland, Portugal und Spanien."}
 ];
-QUESTIONS.forEach((q,i)=>q.id="q"+i);
+QUESTIONS.forEach((q,i)=>{q.id="q"+i;q.kind="mc";});
+
+/* ---------------- KARTEIKARTEN ---------------- */
+const FLASH=[
+["t1","Stabilitätsgesetz 1967 (§1 StabG)","Grundlage des magischen Vierecks: hoher Beschäftigungsstand, stabiles Preisniveau, außenwirtschaftliches Gleichgewicht, stetiges und angemessenes Wachstum."],
+["t1","Magisches Sechseck: die 2 Zusatzziele","Gerechte Einkommens- und Vermögensverteilung und Schutz der natürlichen Umwelt."],
+["t1","Warum „magisch“?","Nicht alle Ziele sind gleichzeitig erreichbar. Das wäre wie Zauberei."],
+["t1","Zielkonflikt","Fördert man ein Ziel, gefährdet man ein anderes. Beispiel: Vollbeschäftigung ↔ Preisstabilität (mehr Jobs → mehr Nachfrage → Preise ↑)."],
+["t1","Zielharmonie","Zwei Ziele fördern sich gegenseitig. Beispiel: Wachstum ↔ Beschäftigung (mehr Produktion → mehr Jobs)."],
+["t2","Zielwerte der vier Indikatoren","ALQ < 3 % · BIP-Wachstum 2–3 % · Inflation knapp < 2 % · Außenbeitragsquote 1–2 %"],
+["t2","Außenbeitragsquote","(Exporte − Importe) ÷ BIP × 100. Zielwert 1–2 %, Deutschland 2019–2025: 2,5–5,6 % → zu hoch."],
+["t2","Beggar-thy-Neighbor","Ein Außenhandelsüberschuss sichert Jobs und Wohlstand im Inland auf Kosten des Auslands."],
+["t2","Kritik an der ALQ","Umschüler, 1-€-Jobber, private Vermittlung, „Unvermittelbare“ und Ältere fehlen → die Quote ist zu niedrig."],
+["t2","Kritik am BIP","Soziale Kosten und Umweltzerstörung werden nicht erfasst."],
+["t2","Kritik an der Inflationsrate","Gefühlte ≠ gemessene Inflation. Der Warenkorb ist nach Einkommensanteil gewichtet, nicht nach Kaufhäufigkeit."],
+["t3","Hochkonjunktur (Boom)","Kapazitäten voll ausgelastet, fast Vollbeschäftigung, Preise, Löhne und Zinsen steigen."],
+["t3","Abschwung (Rezession)","Nachfrage ↓, Lager voll, Investitionen ↓, ALQ ↑."],
+["t3","Depression","Hohe ALQ, Insolvenzen ↑, niedrige Zinsen, Pessimismus."],
+["t3","Aufschwung","Nachfrage ↑, Investitionen ↑, Produktion ↑, ALQ sinkt, Optimismus."],
+["t3","Frühindikatoren","Lagerbestände, Auftragseingänge, Gewinnerwartungen, Investitionsabsichten, Aktienindex."],
+["t3","Gegenwartsindikatoren","Sparquote, reales BIP, Konsumausgaben, Auslastung des Produktionspotenzials, Kreditnachfrage."],
+["t3","Spätindikatoren","Insolvenzen, ALQ, Steuereinnahmen, Preise, Löhne, Inflationsrate."],
+["t4","Unterkonsumtionstheorie","Konsum zu gering: Löhne steigen langsamer als die Produktion, Reiche sparen mehr."],
+["t4","Monetäre Theorie","Geldmenge steuert: billige Kredite → Aufschwung → Preise ↑ → Zentralbank bremst → Abschwung."],
+["t4","Überinvestitionstheorie","Zu viel investiert → Überproduktion, Angebot > Nachfrage → Überkapazitäten werden abgebaut."],
+["t4","Exogene Theorien","Ursachen von außen: Krieg, Naturkatastrophen, Wahlen, Stimmung."],
+["t5","Keynesianismus","Nachfragepolitik nach Keynes (Weltwirtschaftskrise 1930er): Markt instabil, Staat greift antizyklisch ein."],
+["t5","Say'sches Theorem","„Jedes Angebot schafft sich seine Nachfrage.“ Kurzfristiges Argument der Angebotspolitik."],
+["t5","Crowding-out","Staat nimmt Kredite auf → Zinsen ↑ → private Investitionen ↓."],
+["t5","Time-lags","Der Staat reagiert zu langsam → Maßnahmen wirken prozyklisch statt antizyklisch."],
+["t5","Antizyklisch","Gegen die Konjunktur handeln: im Tief Ausgaben ↑ und Steuern ↓, im Boom Ausgaben ↓, Steuern ↑, Rücklagen bilden."],
+["t5","Ordnungspolitik","Ansatz der Angebotspolitik: Der Staat schafft gute Rahmenbedingungen, greift aber nicht in den Ablauf ein."],
+["t5","Trickle-Down-Effekt","Merkwort der Angebotspolitik: Geht es Unternehmen gut, „tröpfelt“ der Wohlstand nach unten. Investitionen sind der Motor."],
+["t5","Maßnahmen Angebotspolitik","Staatskonsum ↓, kaum Neuverschuldung, Deregulierung, Unternehmenssteuern ↓, Innovation und Wettbewerb fördern, Lohnmäßigung."],
+["t6","Arbeitslos nach §16 SGB III","Mind. 15 Jahre, beschäftigungslos oder < 15 Wochenstunden, sucht versicherungspflichtige Arbeit, arbeitslos gemeldet, verfügbar, nicht arbeitsunfähig krank."],
+["t6","Arbeitsangebot / Arbeitsnachfrage","Angebot = Erwerbstätige + Arbeitslose · Nachfrage = Erwerbstätige + offene Stellen"],
+["t6","Nicht als arbeitslos gezählt","Umschüler, über 58-Jährige ohne Jobangebot, Aufstocker (ab 15 Std.), Kindererziehung, Pflege, Schule."],
+["t6","Jugendarbeitslosigkeit August 2025","Deutschland 6,5 % (niedrigste), EU-27 14,6 %, Eurozone 14 %, Estland 25,4 % (höchste)."]
+].map((x,i)=>({id:"f"+i,kind:"fc",t:x[0],f:x[1],b:x[2]}));
+
+/* ---------------- ZUORDNEN ---------------- */
+const SORTS=[
+{t:"t5",title:"Nachfrage- oder Angebotspolitik? Ordne jede Aussage zu.",cats:["Nachfragepolitik","Angebotspolitik"],items:[["Der Markt ist instabil",0],["Say'sches Theorem",1],["Keynes",0],["Friedman / Monetarismus",1],["Ansatz: antizyklisch",0],["Ansatz: Ordnungspolitik",1],["Deregulierung",1],["Staatsausgaben auf Kredit in der Tiefphase",0],["Trickle-Down-Effekt",1],["Der Staat muss Vollbeschäftigung sichern",0]]},
+{t:"t5",title:"Nachfragepolitik: Welche Maßnahme gehört in welche Phase?",cats:["Tiefphase","Hochphase"],items:[["Steuern senken",0],["Rücklagen bilden",1],["Straßenbau auf Kredit",0],["Zinsen erhöhen",1],["Prämien und Subventionen erhöhen",0],["Kredite tilgen",1]]},
+{t:"t5",title:"Gegen welche Politik richtet sich die Kritik?",cats:["gegen Nachfragepolitik","gegen Angebotspolitik"],items:[["Crowding-out",0],["Time-lags",0],["Löhne ↓ → Konsum ↓",1],["Exportfokus setzt andere Länder unter Druck",1],["Staatsverschuldung steigt",0],["Globale Nachfrageschwäche (Teufelskreis)",1]]},
+{t:"t3",title:"Früh-, Gegenwarts- oder Spätindikator?",cats:["Früh","Gegenwart","Spät"],items:[["Auftragseingänge",0],["Aktienindex",0],["Lagerbestände",0],["Reales BIP",1],["Konsumausgaben",1],["Kreditnachfrage",1],["Insolvenzen",2],["Löhne",2],["Steuereinnahmen",2]]},
+{t:"t3",title:"Zu welcher Konjunkturphase passt das?",cats:["Aufschwung","Boom","Abschwung","Depression"],items:[["Kapazitäten voll ausgelastet",1],["Lager sind voll",2],["Insolvenzen ↑, Pessimismus",3],["ALQ sinkt, Optimismus",0],["Preise, Löhne, Zinsen ↑",1],["Investitionen ↓, ALQ ↑",2],["Niedrige Zinsen, hohe ALQ",3],["Nachfrage und Produktion ↑",0]]},
+{t:"t1",title:"Zielkonflikt oder Zielharmonie?",cats:["Zielkonflikt","Zielharmonie"],items:[["Wachstum ↔ Umweltschutz",0],["Wachstum ↔ Beschäftigung",1],["Vollbeschäftigung ↔ Preisstabilität",0],["Wachstum ↔ Preisstabilität",0],["Außenhandelsüberschuss ↔ Preisstabilität",0]]},
+{t:"t6",title:"Wird die Person als arbeitslos gezählt?",cats:["ja","nein"],items:[["30-Jährige, arbeitslos gemeldet, sucht Vollzeitjob",0],["Teilnehmer an einer Umschulung",1],["Student ohne Job",1],["59-Jähriger ohne Jobangebot",1],["Aufstocker mit 20 Wochenstunden",1],["25-Jähriger mit 10-Stunden-Job, gemeldet, sucht mehr Arbeit",0],["Rentnerin",1]]},
+{t:"t4",title:"Welche Konjunkturtheorie steckt dahinter?",cats:["Unterkonsumtion","Monetär","Überinvestition","Exogen"],items:[["Löhne steigen langsamer als die Produktion",0],["Die Zentralbank bremst",1],["Überkapazitäten werden abgebaut",2],["Krieg und Wahlen",3],["Reiche sparen mehr",0],["Billige Kredite lösen Aufschwung aus",1],["Angebot > Nachfrage nach zu vielen Investitionen",2],["Naturkatastrophen",3]]}
+].map((x,i)=>Object.assign(x,{id:"s"+i,kind:"sort"}));
+
+/* ---------------- REIHENFOLGE ---------------- */
+const ORDERS=[
+{t:"t3",title:"Bring die Konjunkturphasen in die richtige Reihenfolge. Beginne mit dem Aufschwung.",steps:["Aufschwung","Hochkonjunktur (Boom)","Abschwung (Rezession)","Depression"]},
+{t:"t3",title:"Wie kommt es vom Boom zum Abschwung? Ordne die Wirkungskette.",steps:["Löhne, Preise und Zinsen steigen","Kosten der Unternehmen steigen","Gewinne sinken","Investitionen sinken","Entlassungen, ALQ steigt"]},
+{t:"t5",title:"Ordne die Wirkungskette des Crowding-out.",steps:["Staat nimmt Kredite auf","Nachfrage nach Krediten steigt","Zinsen steigen","Private Investitionen sinken"]},
+{t:"t4",title:"Ordne den Ablauf nach der monetären Konjunkturtheorie.",steps:["Geldmenge steigt","Kredite werden billig","Aufschwung","Preise steigen","Zentralbank bremst","Abschwung"]},
+{t:"t5",title:"Kritik an der Angebotspolitik: Ordne den Teufelskreis.",steps:["Lohnmäßigung","Konsum sinkt","Inlandsnachfrage ist schwach","Unternehmen setzen auf Export","Druck auf andere Länder","Globale Nachfrageschwäche"]},
+{t:"t1",title:"Warum gefährdet Vollbeschäftigung die Preisstabilität? Ordne die Kette.",steps:["Mehr Menschen haben Arbeit","Einkommen steigen","Nachfrage steigt","Preise steigen"]},
+{t:"t5",title:"Nachfragepolitik in der Rezession: Ordne die Wirkungskette.",steps:["Konsumnachfrage sinkt","Staat erhöht Ausgaben auf Kredit","Unternehmen bekommen Aufträge","Beschäftigung und Einkommen steigen","Konsum steigt wieder"]}
+].map((x,i)=>Object.assign(x,{id:"o"+i,kind:"order"}));
+
+/* ---------------- LÜCKENTEXT ---------------- */
+const CLOZES=[
+["t1","Das magische Viereck beruht auf dem [[Stabilitätsgesetz|StabG|Stabilitäts- und Wachstumsgesetz]] von [[1967]]."],
+["t1","Später kamen die Ziele gerechte [[Einkommensverteilung|Einkommens- und Vermögensverteilung|Verteilung|Vermögensverteilung]] und Schutz der [[Umwelt|natürlichen Umwelt]] hinzu."],
+["t2","ALQ = Arbeitslose ÷ (Arbeitslose + [[Erwerbstätige]]) × 100"],
+["t2","BIP = Produktionswert − [[Vorleistungen]] + (Gütersteuern − [[Subventionen]])"],
+["t2","Außenbeitragsquote = ([[Exporte]] − [[Importe]]) ÷ [[BIP]] × 100"],
+["t2","Der Zielwert der Inflationsrate liegt knapp unter [[2]] %, der Zielwert der ALQ unter [[3]] %."],
+["t3","Auftragseingänge sind ein [[Frühindikator]], die Arbeitslosenquote ist ein [[Spätindikator]]."],
+["t5","Die Nachfragepolitik geht auf [[Keynes]] zurück, die Angebotspolitik unter anderem auf [[Friedman]]."],
+["t5","„Jedes Angebot schafft sich seine Nachfrage“ nennt man das [[Say'sche Theorem|Saysche Theorem|Say'sches Theorem|Saysches Theorem]]."],
+["t5","Nimmt der Staat Kredite auf, steigen die [[Zinsen]] und private Investitionen sinken. Das nennt man [[Crowding-out|Crowding out]]."],
+["t5","Die Nachfragepolitik handelt [[antizyklisch]], die Angebotspolitik setzt auf [[Ordnungspolitik]]."],
+["t5","Reagiert der Staat zu langsam (Time-lags), wirken die Maßnahmen [[prozyklisch]] statt antizyklisch."],
+["t6","Arbeitsangebot = Erwerbstätige + [[Arbeitslose]]. Arbeitsnachfrage = Erwerbstätige + [[offene Stellen]]."],
+["t6","Als arbeitslos gilt, wer mindestens [[15]] Jahre alt ist und weniger als [[15]] Stunden pro Woche arbeitet."],
+["t6","Die Jugendarbeitslosigkeit lag im August 2025 in Deutschland bei [[6,5]] % und in der EU-27 bei [[14,6]] %."]
+].map((x,i)=>({id:"c"+i,kind:"cloze",t:x[0],text:x[1]}));
+
+/* ---------------- RECHNEN (Zahlen jedes Mal neu) ---------------- */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const rd=(a,b)=>Math.round((a+Math.random()*(b-a))*10)/10;
+const r1=x=>Math.round(x*10)/10;
+const de=(x,d=1)=>x.toLocaleString("de-DE",{maximumFractionDigits:d});
+const CALCS=[
+{t:"t2",name:"ALQ",gen(){const a=rd(1.8,3.2),e=rd(40,46),x=r1(a/(a+e)*100);
+ return {q:`Es gibt ${de(a)} Mio. Arbeitslose und ${de(e)} Mio. Erwerbstätige. Berechne die Arbeitslosenquote.`,ans:x,unit:"%",tol:.15,
+ sol:`ALQ = ${de(a)} ÷ (${de(a)} + ${de(e)}) × 100 ≈ ${de(x)} %. Zielwert unter 3 % → nicht erreicht.`};}},
+{t:"t2",name:"Inflation",gen(){const alt=ri(380,620),p=rd(.8,7.5),neu=Math.round(alt*(1+p/100)),x=r1((neu-alt)/alt*100);
+ return {q:`Ein Warenkorb kostete letztes Jahr ${alt} € und kostet heute ${neu} €. Berechne die Inflationsrate.`,ans:x,unit:"%",tol:.15,
+ sol:`(${neu} − ${alt}) ÷ ${alt} × 100 ≈ ${de(x)} %. Zielwert knapp unter 2 % → ${x<2?"erreicht":"nicht erreicht"}.`};}},
+{t:"t2",name:"Außenbeitragsquote",gen(){const bip=ri(38,44)*100,ex=ri(150,190)*10,d=ri(3,24)*10,im=ex-d,x=r1(d/bip*100);
+ return {q:`Exporte: ${de(ex)} Mrd. €, Importe: ${de(im)} Mrd. €, BIP: ${de(bip)} Mrd. €. Berechne die Außenbeitragsquote.`,ans:x,unit:"%",tol:.15,
+ sol:`(${de(ex)} − ${de(im)}) ÷ ${de(bip)} × 100 ≈ ${de(x)} %. Zielwert 1–2 % → ${x>2?"zu hoch, nicht erreicht":x<1?"zu niedrig, nicht erreicht":"erreicht"}.`};}},
+{t:"t2",name:"Außenhandelsüberschuss",gen(){const ex=ri(150,190)*10,im=ex-ri(5,30)*10;
+ return {q:`Ein Land exportiert Waren für ${de(ex)} Mrd. € und importiert für ${de(im)} Mrd. €. Wie hoch ist der Außenhandelsüberschuss?`,ans:ex-im,unit:"Mrd. €",tol:.5,
+ sol:`Außenhandelsüberschuss = Exporte − Importe = ${de(ex)} − ${de(im)} = ${de(ex-im)} Mrd. €.`};}},
+{t:"t2",name:"BIP",gen(){const pw=ri(70,90)*100,vl=ri(35,45)*100,gs=ri(30,40)*10,sub=ri(5,12)*10,x=pw-vl+gs-sub;
+ return {q:`Produktionswert: ${de(pw)} Mrd. €, Vorleistungen: ${de(vl)} Mrd. €, Gütersteuern: ${de(gs)} Mrd. €, Subventionen: ${de(sub)} Mrd. €. Berechne das BIP.`,ans:x,unit:"Mrd. €",tol:.5,
+ sol:`BIP = ${de(pw)} − ${de(vl)} + (${de(gs)} − ${de(sub)}) = ${de(x)} Mrd. €.`};}},
+{t:"t6",name:"Arbeitsmarkt",gen(){const et=rd(44,46),al=rd(2.4,3.2),os=rd(.5,1.2),ang=Math.random()<.5,x=r1(ang?et+al:et+os);
+ return {q:`Es gibt ${de(et)} Mio. Erwerbstätige, ${de(al)} Mio. Arbeitslose und ${de(os)} Mio. offene Stellen. Berechne das ${ang?"Arbeitsangebot":"die Arbeitsnachfrage"}.`.replace("das die","die"),ans:x,unit:"Mio.",tol:.05,
+ sol:ang?`Arbeitsangebot = Erwerbstätige + Arbeitslose = ${de(et)} + ${de(al)} = ${de(x)} Mio.`:`Arbeitsnachfrage = Erwerbstätige + offene Stellen = ${de(et)} + ${de(os)} = ${de(x)} Mio.`};}}
+].map((x,i)=>Object.assign(x,{id:"k"+i,kind:"calc"}));
+
+/* ---------------- ERKLÄREN (freie Antwort) ---------------- */
+const WRITES=[
+{t:"t1",q:"Erkläre, warum das Sechseck „magisch“ heißt. Nenne einen Zielkonflikt und begründe ihn.",model:"Das Sechseck heißt magisch, weil nicht alle Ziele gleichzeitig erreichbar sind. Ein Zielkonflikt besteht z. B. zwischen Vollbeschäftigung und Preisstabilität: Haben mehr Menschen Arbeit, steigen die Einkommen und damit die Nachfrage. Die höhere Nachfrage lässt die Preise steigen.",
+ pts:[["Nicht alle Ziele gleichzeitig erreichbar",["gleichzeitig","zugleich","nicht alle","zur selben zeit"]],["Einen Zielkonflikt genannt",["preis","umwelt","inflation","konflikt"]],["Mit Wirkungskette begründet",["nachfrage","co2","ressourc","produktion","einkommen"]]]},
+{t:"t2",q:"Beurteile, ob Deutschland 2019–2025 das Ziel „stabiles Preisniveau“ erreicht hat.",model:"Das Ziel gilt bei einer Inflationsrate knapp unter 2 % als erreicht. Zwischen 2019 und 2025 lag die Inflation zwischen 0,5 und 6,9 %, 2022 sogar bei 6,9 %. Das Ziel wurde also nicht erreicht.",
+ pts:[["Indikator/Zielwert genannt (Inflation knapp unter 2 %)",["2 %","2%","zwei prozent","inflation","vpi"]],["Werte genannt (0,5–6,9 %, 2022: 6,9 %)",["6,9","6.9","2022","0,5"]],["Fazit: nicht erreicht",["nicht erreicht","verfehlt","nicht"]]]},
+{t:"t2",q:"Erläutere, warum die Arbeitslosenquote die Arbeitslosigkeit nicht vollständig zeigt.",model:"Gezählt werden nur gemeldete, unfreiwillig Arbeitslose. Personen in Umschulung oder Weiterbildung, 1-€-Jobber, Menschen in privater Vermittlung, „Unvermittelbare“ und ältere Arbeitslose ohne Jobangebot fehlen. Die ALQ ist deshalb zu niedrig.",
+ pts:[["Gruppen genannt, die fehlen",["umschul","weiterbild","1-€","1 €","ein-euro","1-euro","aeltere","58","vermittlung","unvermittelbar"]],["Folge: Quote ist zu niedrig",["zu niedrig","niedriger","weniger","unterschaetz","geringer"]],["Nur gemeldete / unfreiwillige werden gezählt",["gemeldet","unfreiwillig","freiwillig"]]]},
+{t:"t3",q:"Erkläre, wie es vom Boom zum Abschwung kommt.",model:"Im Boom steigen Löhne, Preise und Zinsen. Dadurch steigen die Kosten der Unternehmen und die Gewinne sinken. Gleichzeitig senkt die Inflation die Kaufkraft, die Nachfrage geht zurück. Es entstehen Überkapazitäten, die Unternehmen investieren weniger und entlassen Mitarbeiter.",
+ pts:[["Kosten steigen (Löhne, Zinsen, Preise)",["lohn","loehne","zins","kosten"]],["Gewinne sinken",["gewinn"]],["Kaufkraft / Nachfrage sinkt",["kaufkraft","nachfrage","inflation"]],["Investitionen ↓ / Entlassungen",["investition","entlass","ueberkapaz","arbeitslos"]]]},
+{t:"t3",q:"Ordne Deutschland im Jahr 2015 einer Konjunkturphase zu und begründe.",model:"Deutschland befand sich 2015 im Aufschwung. Konsum und Investitionen stiegen und die Arbeitslosenquote war niedrig bzw. sinkend. Es herrschte aber keine Vollbeschäftigung, deshalb war es noch keine Hochkonjunktur.",
+ pts:[["Phase: Aufschwung",["aufschwung"]],["Konsum / Investitionen steigen",["konsum","investition"]],["ALQ niedrig bzw. sinkend",["alq","arbeitslos"]],["Keine Vollbeschäftigung → kein Boom",["vollbeschaeftigung","hochkonjunktur","boom"]]]},
+{t:"t4",q:"Erkläre die monetäre Konjunkturtheorie.",model:"Nach der monetären Theorie steuert die Geldmenge die Konjunktur. Steigt die Geldmenge, werden Kredite billig, Unternehmen und Haushalte investieren und konsumieren mehr → Aufschwung. Dadurch steigen die Preise. Die Zentralbank bremst dann (z. B. höhere Zinsen) und es kommt zum Abschwung.",
+ pts:[["Geldmenge steuert die Konjunktur",["geldmenge","geld"]],["Billige Kredite → Aufschwung",["kredit","zins"]],["Preise steigen",["preis","inflation"]],["Zentralbank bremst → Abschwung",["zentralbank","ezb","bremst","abschwung"]]]},
+{t:"t5",q:"Vergleiche Nachfrage- und Angebotspolitik anhand von drei Kriterien.",model:"Rolle des Staates: Bei der Nachfragepolitik greift der Staat aktiv ein, bei der Angebotspolitik möglichst wenig. Markt: Die Nachfragepolitik hält den Markt für instabil, die Angebotspolitik für stabil. Ansatz: Nachfragepolitik ist antizyklisch, Angebotspolitik setzt auf Ordnungspolitik. Ursprung: Keynes vs. Neoklassik/Friedman.",
+ pts:[["Rolle des Staates",["staat","eingriff","eingreif"]],["Markt stabil / instabil",["stabil"]],["Ansatz: antizyklisch vs. Ordnungspolitik",["antizykl","ordnungspol"]],["Ursprung: Keynes vs. Friedman/Neoklassik",["keynes","friedman","neoklass","monetar"]]]},
+{t:"t5",q:"Erkläre den Crowding-out-Effekt.",model:"Finanziert der Staat seine Ausgaben über Kredite, steigt die Nachfrage nach Krediten. Dadurch steigen die Zinsen. Für private Unternehmen werden Kredite teurer, sie investieren weniger. Die staatlichen Investitionen verdrängen also private Investitionen.",
+ pts:[["Staat nimmt Kredite auf",["kredit","schulden","verschuld"]],["Zinsen steigen",["zins"]],["Private Investitionen sinken / werden verdrängt",["privat","verdraeng","investition"]]]},
+{t:"t5",q:"Erläutere zwei Maßnahmen der Nachfragepolitik in einer Rezession und ihre Wirkung.",model:"Der Staat erhöht seine Ausgaben auf Kredit, z. B. für Straßenbau oder Stromtrassen. Außerdem kann er Steuern senken. Unternehmen bekommen Aufträge und Haushalte haben mehr Geld. Die Nachfrage steigt, es wird mehr produziert und es entstehen Jobs.",
+ pts:[["Staatsausgaben erhöhen (z. B. Straßenbau)",["staatsausgaben","strassenbau","stromtrass","ausgaben","auftraege","investier"]],["Steuern / Zinsen senken oder Prämien erhöhen",["steuer","zins","praemie","subvention"]],["Wirkung: Nachfrage ↑ → Produktion / Jobs ↑",["nachfrage","konsum","jobs","beschaeftig","arbeitsplae"]]]},
+{t:"t5",q:"Ein Wirtschaftsprogramm will mehr in Infrastruktur, Bildung und Forschung investieren, ohne neue Schulden aufzunehmen. Ordne es ein und begründe.",model:"Das Programm ist angebotsorientiert. Es verbessert die Produktionsbedingungen und Rahmenbedingungen (Infrastruktur, Bildung, Forschung → Innovationen). Außerdem verzichtet es auf neue Schulden, was ebenfalls typisch für die Angebotspolitik ist.",
+ pts:[["Einordnung: angebotsorientiert",["angebot"]],["Bessere Rahmen- / Produktionsbedingungen, Innovation",["rahmen","produktionsbeding","innovation"]],["Keine neuen Schulden",["keine neuen schulden","keine schulden","ohne schulden","ohne neue schulden","keine neuverschuld","keine verschuld"]]]},
+{t:"t5",q:"Beurteile die Angebotspolitik. Nenne eine Chance, ein Risiko und einen Kritikpunkt.",model:"Chance: Die Wirtschaft kann sich frei entwickeln, gute Investitionsbedingungen fördern Wachstum. Risiko: Greift der Staat nicht ein, kann es zu schweren Rezessionen kommen. Kritik: Die Politik geht zulasten der Arbeitnehmer. Sinkende Löhne schwächen den Konsum, der Fokus auf Export setzt andere Länder unter Druck.",
+ pts:[["Chance (freie Entwicklung, Investitionen)",["frei","investition","wettbewerb","innovation","wachstum"]],["Risiko: schwere Rezession",["rezession","krise"]],["Kritik: Löhne ↓ → Konsum ↓ / Exportdruck",["lohn","loehne","konsum","export","arbeitnehmer"]]]},
+{t:"t6",q:"Nenne mindestens vier Merkmale, nach denen jemand laut §16 SGB III als arbeitslos gilt.",model:"Die Person ist mindestens 15 Jahre alt, beschäftigungslos oder arbeitet weniger als 15 Stunden pro Woche, sucht eine versicherungspflichtige Arbeit, ist arbeitslos gemeldet, steht der Vermittlung zur Verfügung und ist nicht arbeitsunfähig krank.",
+ pts:[["Mindestens 15 Jahre alt",["15 jahre","mindestens 15","15-jaehr","15 jaehr"]],["Unter 15 Wochenstunden / beschäftigungslos",["15 stunden","15 wochenstunden","15 std","beschaeftigungslos","stunden"]],["Arbeitslos gemeldet",["gemeldet","meldet"]],["Steht der Vermittlung zur Verfügung",["vermittlung","verfueg"]],["Nicht arbeitsunfähig krank",["krank"]],["Sucht versicherungspflichtige Arbeit",["sucht","versicherungspflicht"]]]},
+{t:"t2",q:"Erkläre, warum ein hoher Außenhandelsüberschuss kritisch gesehen wird.",model:"Ein hoher Überschuss bedeutet „Beggar-thy-Neighbor“: Jobs und Wohlstand im Inland entstehen auf Kosten des Auslands, das Defizite hat. Außerdem treibt die Nachfrage aus dem Ausland die Preise im Inland. Deutschland lag mit 2,5–5,6 % deutlich über dem Zielwert von 1–2 %.",
+ pts:[["Auf Kosten des Auslands (Beggar-thy-Neighbor)",["beggar","ausland","andere laender","nachbar"]],["Gefahr für die Preisstabilität",["preis","inflation"]],["Zielwert 1–2 % überschritten",["1-2","1 - 2","zielwert","zu hoch","2,5","5,6"]]]}
+].map((x,i)=>Object.assign(x,{id:"w"+i,kind:"write"}));
+
+const ALL=[...QUESTIONS,...FLASH,...SORTS,...ORDERS,...CLOZES,...CALCS,...WRITES];
+const TASKS=ALL.filter(x=>x.kind!=="fc");
+const KINDS={mc:"Ankreuzen",cloze:"Lückentext",calc:"Rechnen",sort:"Zuordnen",order:"Reihenfolge",write:"Erklären",fc:"Karteikarte"};
 
 /* ---------------- STATE ---------------- */
 const KEY="vwl-kurzarbeit-v1";
 let S={st:{},read:{},exams:[]};
 try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-// status: 0 neu, 1 falsch, 2 einmal richtig, 3 sicher (2x richtig in Folge)
 function status(id){const s=S.st[id]; if(!s) return 0; if(s.last===false) return 1; return s.streak>=2?3:2;}
 function record(id,ok){const s=S.st[id]||{streak:0}; s.streak=ok?(s.streak||0)+1:0; s.last=ok; S.st[id]=s;}
 const COLORS=["var(--new)","var(--bad)","var(--warn)","var(--ok)"];
@@ -395,43 +595,144 @@ const LABELS=["neu","falsch","1× richtig","sicher"];
 function counts(list){const c=[0,0,0,0]; list.forEach(q=>c[status(q.id)]++); return c;}
 function barHTML(c){const n=c.reduce((a,b)=>a+b,0)||1; return `<div class="bar" aria-hidden="true">${[3,2,1,0].map(k=>`<span style="width:${c[k]/n*100}%;background:${COLORS[k]}"></span>`).join("")}</div>`;}
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
-const esc=s=>s.replace(/[&<>]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[m]));
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const rankSort=list=>{const rank=[1,0,2,3]; return shuffle(list).sort((a,b)=>rank.indexOf(status(a.id))-rank.indexOf(status(b.id)));};
 const app=document.getElementById("app");
-let view=null; // current interactive session
-let resetArmed=false;
+const fine=!matchMedia("(pointer:coarse)").matches;
+let view=null, resetArmed=false;
+
+/* ---------------- TEXT-VERGLEICH ---------------- */
+const norm=s=>String(s).toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[–—]/g,"-");
+const tight=s=>norm(s).replace(/,/g,".").replace(/[^a-z0-9.]/g,"");
+function lev(a,b){const m=a.length,n=b.length; let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c;} return p[n];}
+function textMatch(input,answers){const x=tight(input); if(!x) return false;
+  return answers.some(a=>{const y=tight(a); if(x===y) return true; const tol=y.length>=10?2:y.length>=6?1:0; return tol>0&&lev(x,y)<=tol;});}
+function parseNum(s){s=String(s).trim().replace(/\s/g,"").replace(/%|€|mrd\.?|mio\.?/gi,"");
+  if(/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s=s.replace(/\./g,""); return parseFloat(s.replace(",","."));}
+
+/* ---------------- AUFGABEN-TYPEN ----------------
+   Jeder Typ: prep, title, hint, body(it,reveal), bind(it,rerender,changed), ready, answered, score (0..1), pass, solution */
+const H={
+mc:{
+  prep:q=>({order:shuffle(q.a.map((_,i)=>i)),sel:new Set()}),
+  title:it=>it.q.q, hint:it=>it.q.c.length>1?"Mehrere Antworten sind richtig.":"Eine Antwort ist richtig.",
+  body(it,rv){const q=it.q,s=it.s; return `<div class="answers" role="group">${s.order.map((ai,k)=>{
+    const sel=s.sel.has(ai), right=q.c.includes(ai); let cls=sel?"sel":"", mark="";
+    if(rv){ if(sel&&right){cls="right";mark="✓";} else if(sel){cls="wrong";mark="✗";} else if(right){cls="missed";mark="✓";} else cls=""; }
+    return `<label class="ans ${cls}"><input type="checkbox" data-ai="${ai}" ${sel?"checked":""} ${rv?"disabled":""}><span class="letter">${"ABCD"[k]}</span><span>${esc(q.a[ai])}</span><span class="res" style="color:${cls==="wrong"?"var(--bad)":"var(--ok)"}">${mark}</span></label>`;}).join("")}</div>`;},
+  bind(it,rr){app.querySelectorAll(".ans input").forEach(inp=>inp.onchange=()=>{const ai=+inp.dataset.ai; inp.checked?it.s.sel.add(ai):it.s.sel.delete(ai); rr();});},
+  ready:it=>it.s.sel.size>0, answered:it=>it.s.sel.size>0,
+  score(it){const c=it.q.c; return it.s.sel.size===c.length&&c.every(x=>it.s.sel.has(x))?1:0;},
+  explain:it=>esc(it.q.e), solution:it=>"Richtig: "+it.q.c.map(i=>esc(it.q.a[i])).join("; ")
+},
+cloze:{
+  prep(q){const parts=q.text.split(/\[\[(.+?)\]\]/); return {parts,vals:parts.filter((_,i)=>i%2).map(()=>"")};},
+  title:()=>"Ergänze die Lücken.", hint:()=>"Tippe die fehlenden Begriffe oder Zahlen ein. Kleine Tippfehler sind okay.",
+  body(it,rv){let b=0; return `<p class="cloze">${it.s.parts.map((p,i)=>{ if(i%2===0) return esc(p);
+    const k=b++, ans=p.split("|"), v=it.s.vals[k];
+    if(rv) return textMatch(v,ans)?`<span class="blank ok">${esc(v)}</span>`:`<span class="blank bad"><s>${esc(v||"—")}</s>${esc(ans[0])}</span>`;
+    return `<input class="gap" data-b="${k}" value="${esc(v)}" size="${Math.max(4,ans[0].length+1)}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Lücke ${k+1}">`;}).join("")}</p>`;},
+  bind(it,rr,changed){app.querySelectorAll(".gap").forEach(inp=>inp.oninput=()=>{it.s.vals[+inp.dataset.b]=inp.value; changed();});},
+  ready:()=>true, answered:it=>it.s.vals.some(v=>v.trim()),
+  score(it){let b=0,ok=0; it.s.parts.forEach((p,i)=>{if(i%2){ if(textMatch(it.s.vals[b],p.split("|"))) ok++; b++;}}); return ok/b;},
+  explain:it=>"Lösung: "+H.cloze.solution(it),
+  solution:it=>it.s.parts.map((p,i)=>i%2?`<b>${esc(p.split("|")[0])}</b>`:esc(p)).join("")
+},
+calc:{
+  prep:q=>({g:q.gen(),val:""}),
+  title:it=>it.s.g.q, hint:()=>"Runde auf eine Nachkommastelle. Komma oder Punkt ist egal.",
+  body(it,rv){const ok=rv&&H.calc.score(it)===1; return `<div class="calc"><input id="calc-in" class="${rv?(ok?"ok":"bad"):""}" inputmode="decimal" autocomplete="off" value="${esc(it.s.val)}" ${rv?"disabled":""} aria-label="Ergebnis"><span class="unit">${it.s.g.unit}</span></div>`;},
+  bind(it,rr,changed){const i=app.querySelector("#calc-in"); if(i) i.oninput=()=>{it.s.val=i.value; changed();};},
+  ready:()=>true, answered:it=>it.s.val.trim()!=="",
+  score(it){const v=parseNum(it.s.val); return !isNaN(v)&&Math.abs(v-it.s.g.ans)<=it.s.g.tol?1:0;},
+  explain:it=>esc(it.s.g.sol), solution:it=>esc(it.s.g.sol)
+},
+sort:{
+  prep:q=>({order:shuffle(q.items.map((_,i)=>i)),asg:q.items.map(()=>-1)}),
+  title:it=>it.q.title, hint:()=>"Tippe bei jeder Aussage auf die passende Kategorie.",
+  body(it,rv){const q=it.q; return `<div class="sortlist">${it.s.order.map(i=>{const [txt,right]=q.items[i], a=it.s.asg[i];
+    return `<div class="srow"><span>${esc(txt)}</span><div class="chips">${q.cats.map((c,ci)=>{let cls="";
+      if(rv){ if(ci===a&&ci===right) cls="ok"; else if(ci===a) cls="bad"; else if(ci===right) cls="should"; } else if(ci===a) cls="sel";
+      return `<button type="button" class="chip ${cls}" data-i="${i}" data-c="${ci}" ${rv?"disabled":""}>${esc(c)}</button>`;}).join("")}</div></div>`;}).join("")}</div>`;},
+  bind(it,rr){app.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{it.s.asg[+b.dataset.i]=+b.dataset.c; rr();});},
+  ready:it=>it.s.asg.every(a=>a>=0), answered:it=>it.s.asg.some(a=>a>=0),
+  score:it=>it.q.items.filter((x,i)=>it.s.asg[i]===x[1]).length/it.q.items.length,
+  explain:()=>"Grün = richtig zugeordnet. Gestrichelt = da hätte es hingehört.",
+  solution:it=>it.q.cats.map((c,ci)=>`<b>${esc(c)}:</b> ${it.q.items.filter(x=>x[1]===ci).map(x=>esc(x[0])).join(", ")}`).join("<br>")
+},
+order:{
+  prep(q){let a; do a=shuffle(q.steps.map((_,i)=>i)); while(a.every((x,i)=>x===i)); return {arr:a};},
+  title:it=>it.q.title, hint:()=>"Verschiebe die Schritte mit den Pfeilen.",
+  body(it,rv){const a=it.s.arr,n=a.length; return `<div class="ordlist">${a.map((si,k)=>`<div class="orow ${rv?(si===k?"ok":"bad"):""}"><span class="pos">${k+1}</span>
+    <span>${esc(it.q.steps[si])}${rv&&si!==k?`<small>gehört auf Platz ${si+1}</small>`:""}</span>
+    <span class="mv"><button type="button" data-k="${k}" data-d="-1" ${rv||k===0?"disabled":""} aria-label="nach oben">↑</button><button type="button" data-k="${k}" data-d="1" ${rv||k===n-1?"disabled":""} aria-label="nach unten">↓</button></span></div>`).join("")}</div>`;},
+  bind(it,rr){app.querySelectorAll(".mv button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k,j=k+(+b.dataset.d),a=it.s.arr; [a[k],a[j]]=[a[j],a[k]]; it.s.moved=true; rr();});},
+  ready:()=>true, answered:it=>!!it.s.moved,
+  score:it=>it.s.arr.filter((x,k)=>x===k).length/it.s.arr.length,
+  explain:it=>"Richtig: "+it.q.steps.map(esc).join(" → "), solution:it=>it.q.steps.map(esc).join(" → ")
+},
+write:{
+  prep:q=>({text:"",ticks:null}),
+  title:it=>it.q.q, hint:()=>"Schreib deine Antwort in ganzen Sätzen, so wie in der Klausur. Danach vergleichst du mit der Musterlösung.",
+  body(it,rv){const s=it.s; let h=`<div class="writebox"><textarea id="w-in" ${rv?"disabled":""} placeholder="Deine Antwort …" aria-label="Deine Antwort">${esc(s.text)}</textarea>`;
+    if(rv){ const got=s.ticks.filter(Boolean).length, n=s.ticks.length;
+      h+=`<div class="model"><span class="lbl">Musterlösung</span>${esc(it.q.model)}</div>
+      <div class="checklist"><span class="lbl">Was hast du erwähnt? Hake ehrlich ab (${got}/${n})</span>${it.q.pts.map((p,k)=>`<label><input type="checkbox" data-k="${k}" ${s.ticks[k]?"checked":""}><span>${esc(p[0])}${s.auto[k]?' <span class="auto">· in deinem Text gefunden</span>':""}</span></label>`).join("")}</div>`;}
+    return h+"</div>";},
+  bind(it,rr,changed){const t=app.querySelector("#w-in"); if(t&&!t.disabled){t.oninput=()=>{it.s.text=t.value; changed();};}
+    app.querySelectorAll(".checklist input").forEach(c=>c.onchange=()=>{it.s.ticks[+c.dataset.k]=c.checked; rr();});},
+  onCheck(it){const x=norm(it.s.text); it.s.auto=it.q.pts.map(p=>p[1].some(k=>x.includes(norm(k)))); it.s.ticks=it.s.auto.slice();},
+  ready:()=>true, answered:it=>it.s.text.trim()!=="",
+  score:it=>it.s.ticks?it.s.ticks.filter(Boolean).length/it.s.ticks.length:0,
+  pass:it=>H.write.score(it)>=2/3-1e-9,
+  explain:()=>"", solution:it=>esc(it.q.model)
+}};
+const pass=it=>(H[it.q.kind].pass||(x=>H[x.q.kind].score(x)===1))(it);
+const prepare=q=>({q,s:H[q.kind].prep(q),checked:false,recorded:false});
 
 /* ---------------- HOME ---------------- */
 function home(){
   view=null;
-  const c=counts(QUESTIONS), total=QUESTIONS.length, wrong=c[1];
+  const c=counts(ALL), wrong=TASKS.filter(q=>status(q.id)===1).length;
   const last=S.exams[S.exams.length-1];
   app.innerHTML=`<div class="view">
   <section class="hero">
     <span class="eyebrow">Spickzettel VWL · Kurzarbeit</span>
     <h1>Erst lernen, dann abfragen lassen.</h1>
-    <p class="lead">Lies dir ein Thema durch und übe danach die Fragen. Eine Frage gilt als <b>sicher</b>, wenn du sie zweimal hintereinander richtig beantwortet hast.</p>
+    <ol class="steps">
+      <li><b>Lesen</b>Ein Thema einmal durchgehen</li>
+      <li><b>Karteikarten</b>Begriffe aus dem Kopf abrufen</li>
+      <li><b>Üben</b>Ankreuzen, Lücken, Rechnen, Zuordnen, Erklären</li>
+      <li><b>Fehler</b>Am nächsten Tag wiederholen</li>
+      <li><b>Prüfung</b>Kurz vor der Klausur simulieren</li>
+    </ol>
     ${barHTML(c)}
     <div class="legend">${[3,2,1,0].map(k=>`<span><i style="background:${COLORS[k]}"></i>${c[k]} ${LABELS[k]}</span>`).join("")}</div>
-    <span class="big">${c[3]} von ${total} Fragen sicher${last?` · letzte Prüfung: ${last.score}/${last.n} ${last.score/last.n>=.8?"bestanden":"nicht bestanden"}`:""}</span>
+    <span class="big">${c[3]} von ${ALL.length} Aufgaben sicher (2× hintereinander richtig)${last?` · letzte Prüfung: ${last.score}/${last.n} ${last.score/last.n>=.8?"bestanden":"nicht bestanden"}`:""}</span>
   </section>
   <div class="actions">
-    <button class="act primary" id="go-all"><b>Alle Fragen üben</b><small>Unsichere Fragen zuerst</small></button>
-    <button class="act" id="go-wrong" ${wrong?"":"disabled"}><b>Fehler wiederholen</b><small>${wrong?wrong+" falsch beantwortete Fragen":"Gerade keine Fehler"}</small></button>
-    <button class="act" id="go-exam"><b>Prüfungssimulation</b><small>20 Fragen · bestanden ab 80 %</small></button>
+    <button class="act primary" id="go-mix"><b>Gemischtes Training</b><small>15 Aufgaben, alle Typen, Unsicheres zuerst</small></button>
+    <button class="act" id="go-wrong" ${wrong?"":"disabled"}><b>Fehler wiederholen</b><small>${wrong?wrong+" falsch gelöste Aufgaben":"Gerade keine Fehler"}</small></button>
+    <button class="act" id="go-exam"><b>Prüfungssimulation</b><small>20 Aufgaben · bestanden ab 80 %</small></button>
   </div>
+  <span class="eyebrow">Nach Aufgabentyp üben</span>
+  <div class="kinds">${Object.keys(KINDS).map(k=>`<button class="btn" data-kind="${k}">${KINDS[k]}<small>${ALL.filter(x=>x.kind===k).length}</small></button>`).join("")}</div>
   <span class="eyebrow">Themen</span>
-  <div class="topics">${TOPICS.map((t,i)=>{const qs=QUESTIONS.filter(q=>q.t===t.id), tc=counts(qs);
+  <div class="topics">${TOPICS.map((t,i)=>{const all=ALL.filter(q=>q.t===t.id), tc=counts(all), nt=all.filter(x=>x.kind!=="fc").length, nf=all.length-nt;
     return `<article class="topic"><div class="num">${i+1}</div>
     <h3>${t.title}${t.hot?' <span class="tag">Schwerpunkt</span>':""}${t.star?' <span class="tag">wichtig</span>':""}${S.read[t.id]?' <span class="tag read">gelesen</span>':""}</h3>
-    <div class="meta">${barHTML(tc)}<span class="big">${tc[3]}/${qs.length}</span></div>
-    <div class="btns"><button class="btn" data-learn="${t.id}">Lernen</button><button class="btn solid" data-practice="${t.id}">${qs.length} Fragen üben</button></div></article>`;}).join("")}</div>
+    <div class="meta">${barHTML(tc)}<span class="big">${tc[3]}/${all.length}</span></div>
+    <div class="btns"><button class="btn" data-learn="${t.id}">Lernen</button><button class="btn" data-fc="${t.id}">${nf} Karteikarten</button><button class="btn solid" data-practice="${t.id}">${nt} Aufgaben üben</button></div></article>`;}).join("")}</div>
   <div class="foot">Dein Fortschritt wird nur in diesem Browser gespeichert. <button class="ghost ${resetArmed?"danger":""}" id="reset">${resetArmed?"Wirklich alles zurücksetzen?":"Fortschritt zurücksetzen"}</button></div>
   </div>`;
-  app.querySelector("#go-all").onclick=()=>practice(QUESTIONS,"Alle Fragen");
-  app.querySelector("#go-wrong").onclick=()=>wrong&&practice(QUESTIONS.filter(q=>status(q.id)===1),"Fehler wiederholen");
+  app.querySelector("#go-mix").onclick=()=>practice(shuffle(rankSort(TASKS).slice(0,15)),"Gemischtes Training",true);
+  app.querySelector("#go-wrong").onclick=()=>wrong&&practice(TASKS.filter(q=>status(q.id)===1),"Fehler wiederholen");
   app.querySelector("#go-exam").onclick=exam;
+  app.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{const k=b.dataset.kind, list=ALL.filter(x=>x.kind===k); k==="fc"?flash(list,"Alle Karteikarten"):practice(list,KINDS[k]);});
   app.querySelectorAll("[data-learn]").forEach(b=>b.onclick=()=>learn(b.dataset.learn));
-  app.querySelectorAll("[data-practice]").forEach(b=>b.onclick=()=>{const t=TOPICS.find(x=>x.id===b.dataset.practice);practice(QUESTIONS.filter(q=>q.t===t.id),t.title);});
+  app.querySelectorAll("[data-fc]").forEach(b=>b.onclick=()=>{const t=TOPICS.find(x=>x.id===b.dataset.fc); flash(FLASH.filter(q=>q.t===t.id),t.title);});
+  app.querySelectorAll("[data-practice]").forEach(b=>b.onclick=()=>{const t=TOPICS.find(x=>x.id===b.dataset.practice); practice(TASKS.filter(q=>q.t===t.id),t.title);});
   app.querySelector("#reset").onclick=()=>{if(!resetArmed){resetArmed=true;home();return;} S={st:{},read:{},exams:[]};save();resetArmed=false;home();};
   resetArmed=false;
 }
@@ -446,70 +747,98 @@ function learn(id){
   <div class="nav-row">
     <button class="btn" id="back">Zur Übersicht</button>
     <span style="display:flex;gap:8px;flex-wrap:wrap">${next?`<button class="btn" id="next">Weiter: ${next.title}</button>`:""}
-    <button class="btn solid" id="quiz">Jetzt abfragen</button></span>
+    <button class="btn" id="fc">Karteikarten</button><button class="btn solid" id="quiz">Jetzt abfragen</button></span>
   </div></div>`;
   scrollTo(0,0);
   app.querySelector("#back").onclick=home;
   if(next) app.querySelector("#next").onclick=()=>learn(next.id);
-  app.querySelector("#quiz").onclick=()=>practice(QUESTIONS.filter(q=>q.t===id),t.title);
+  app.querySelector("#fc").onclick=()=>flash(FLASH.filter(q=>q.t===id),t.title);
+  app.querySelector("#quiz").onclick=()=>practice(TASKS.filter(q=>q.t===id),t.title);
 }
 
-/* ---------------- QUESTION CARD ---------------- */
-function prepare(q){return {q, order:shuffle(q.a.map((_,i)=>i)), sel:new Set(), checked:false};}
-function isCorrect(item){const c=item.q.c; return item.sel.size===c.length && c.every(x=>item.sel.has(x));}
-function cardHTML(item,{reveal}){
-  const q=item.q, t=TOPICS.find(x=>x.id===q.t), st=status(q.id), multi=q.c.length>1;
-  const ok=reveal&&isCorrect(item);
-  return `<div class="card ${reveal?"locked":""}">
-  <div class="qtop"><div class="qmeta"><span class="dot" style="background:${COLORS[st]}"></span>${LABELS[st]} · ${t.title}</div>
-  <p class="qtext">${esc(q.q)}</p><span class="hint">${multi?"Mehrere Antworten sind richtig.":"Eine Antwort ist richtig."}</span></div>
-  <div class="answers" role="group">${item.order.map((ai,k)=>{
-    const sel=item.sel.has(ai), right=q.c.includes(ai);
-    let cls=sel?"sel":"", mark="";
-    if(reveal){ if(sel&&right){cls="right";mark="✓";} else if(sel&&!right){cls="wrong";mark="✗";} else if(right){cls="missed";mark="✓";} else cls=""; }
-    return `<label class="ans ${cls}"><input type="checkbox" data-ai="${ai}" ${sel?"checked":""} ${reveal?"disabled":""}><span class="letter">${"ABCD"[k]}</span><span>${esc(q.a[ai])}</span><span class="res" style="color:${cls==="wrong"?"var(--bad)":"var(--ok)"}">${mark}</span></label>`;}).join("")}</div>
-  ${reveal?`<div class="feedback ${ok?"ok":"bad"}"><b>${ok?"Richtig!":"Leider falsch."}</b>${esc(q.e)}</div>`:""}
-  </div>`;
-}
-function bindAnswers(item,rerender){
-  app.querySelectorAll(".ans input").forEach(inp=>inp.onchange=()=>{const ai=+inp.dataset.ai; inp.checked?item.sel.add(ai):item.sel.delete(ai); rerender();});
-}
-
-/* ---------------- PRACTICE ---------------- */
-function practice(list,title){
+/* ---------------- KARTEIKARTEN-MODUS ---------------- */
+function flash(list,title){
   if(!list.length) return home();
-  // unsichere zuerst: falsch, neu, 1x richtig, sicher
-  const rank=[1,0,2,3];
-  const ordered=shuffle(list).sort((a,b)=>rank.indexOf(status(a.id))-rank.indexOf(status(b.id)));
-  view={mode:"practice",title,items:ordered.map(prepare),i:0,right:0};
+  view={mode:"fc",title,items:rankSort(list),i:0,flipped:false,known:0,missed:[]};
+  renderFlash();
+}
+function renderFlash(){
+  const v=view,c=v.items[v.i],n=v.items.length,st=status(c.id),t=TOPICS.find(x=>x.id===c.t);
+  app.innerHTML=`<div class="view">
+  <div class="qhead"><span class="eyebrow">Karteikarten · ${esc(v.title)}</span><span class="big">Karte ${v.i+1} / ${n} · ${v.known} gewusst</span></div>
+  <div class="prog"><span style="width:${v.i/n*100}%"></span></div>
+  <button type="button" class="flash ${v.flipped?"flipped":""}" id="card">
+    <span class="qmeta"><span class="dot" style="background:${COLORS[st]}"></span>${LABELS[st]} · ${t.title}</span>
+    <span class="front">${esc(c.f)}</span>
+    ${v.flipped?`<span class="back">${esc(c.b)}</span>`:`<span class="tap">Überleg dir die Antwort, dann tippe zum Umdrehen</span>`}
+  </button>
+  ${v.flipped?`<div class="fcbtns"><button class="btn lg no-btn" id="no">Wusste ich nicht</button><button class="btn lg yes-btn" id="yes">Wusste ich</button></div>`:""}
+  <div class="qfoot"><button class="btn" id="quit">Beenden</button><span class="kbd">Leertaste umdrehen · ← wusste ich nicht · → wusste ich</span></div>
+  </div>`;
+  app.querySelector("#card").onclick=()=>{v.flipped=!v.flipped; renderFlash();};
+  if(v.flipped){app.querySelector("#no").onclick=()=>rateFlash(false); app.querySelector("#yes").onclick=()=>rateFlash(true);}
+  app.querySelector("#quit").onclick=flashDone;
+}
+function rateFlash(ok){const v=view,c=v.items[v.i]; record(c.id,ok); save(); if(ok) v.known++; else v.missed.push(c);
+  if(v.i+1<v.items.length){v.i++; v.flipped=false; renderFlash();} else flashDone();}
+function flashDone(){
+  const v=view; view=null;
+  app.innerHTML=`<div class="view"><section class="result"><span class="eyebrow">Karteikarten · ${esc(v.title)}</span>
+  <div class="score">${v.known}/${v.known+v.missed.length}</div>
+  <p class="lead">${v.missed.length?`${v.missed.length} Karten wusstest du noch nicht. Geh sie gleich nochmal durch.`:"Alle gewusst. Jetzt die Aufgaben üben!"}</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${v.missed.length?`<button class="btn solid" id="again">Nicht gewusste nochmal</button>`:""}<button class="btn" id="home">Zur Übersicht</button></div></section></div>`;
+  scrollTo(0,0);
+  app.querySelector("#home").onclick=home;
+  const a=app.querySelector("#again"); if(a) a.onclick=()=>flash(v.missed,v.title);
+}
+
+/* ---------------- ÜBEN ---------------- */
+function cardHTML(it,rv){
+  const h=H[it.q.kind], st=status(it.q.id), t=TOPICS.find(x=>x.id===it.q.t);
+  return `<div class="card ${rv?"locked":""}">
+  <div class="qtop"><div class="qmeta"><span class="pill">${KINDS[it.q.kind]}</span><span class="dot" style="background:${COLORS[st]}"></span>${LABELS[st]} · ${t.title}</div>
+  <p class="qtext">${esc(h.title(it))}</p><span class="hint">${h.hint(it)}</span></div>
+  ${h.body(it,rv)}
+  ${rv?feedbackHTML(it):""}</div>`;
+}
+function feedbackHTML(it){
+  const h=H[it.q.kind], sc=h.score(it), ok=pass(it);
+  if(it.q.kind==="write") return `<div class="feedback ${ok?"ok":sc>0?"part":"bad"}"><b>${ok?"Gut erklärt!":sc>0?"Teilweise.":"Da fehlt noch einiges."}</b>Du hast ${Math.round(sc*it.s.ticks.length)} von ${it.s.ticks.length} Punkten. Ab ${Math.ceil(it.s.ticks.length*2/3)} zählt die Aufgabe als richtig.</div>`;
+  const ex=h.explain(it);
+  return `<div class="feedback ${ok?"ok":sc>0?"part":"bad"}"><b>${ok?"Richtig!":sc>0?`Teilweise richtig (${Math.round(sc*100)} %).`:"Leider falsch."}</b>${ex}</div>`;
+}
+function practice(list,title,keepOrder){
+  if(!list.length) return home();
+  view={mode:"practice",title,items:(keepOrder?list:rankSort(list)).map(prepare),i:0,right:0};
   renderPractice();
 }
 function renderPractice(){
-  const v=view, item=v.items[v.i], n=v.items.length;
+  const v=view, it=v.items[v.i], n=v.items.length, h=H[it.q.kind];
   app.innerHTML=`<div class="view">
-  <div class="qhead"><span class="eyebrow">${esc(v.title)}</span><span class="big">Frage ${v.i+1} / ${n} · ${v.right} richtig</span></div>
-  <div class="prog"><span style="width:${(v.i+(item.checked?1:0))/n*100}%"></span></div>
-  ${cardHTML(item,{reveal:item.checked})}
-  <div class="qfoot"><button class="btn" id="quit">Beenden</button><span class="kbd">Tasten: A–D wählen · Enter prüfen/weiter</span>
-  ${item.checked?`<button class="btn solid lg" id="next">${v.i+1<n?"Weiter":"Auswertung"}</button>`:`<button class="btn solid lg" id="check" ${item.sel.size?"":"disabled"}>Antwort prüfen</button>`}</div>
+  <div class="qhead"><span class="eyebrow">${esc(v.title)}</span><span class="big">Aufgabe ${v.i+1} / ${n} · ${v.right} richtig</span></div>
+  <div class="prog"><span style="width:${(v.i+(it.checked?1:0))/n*100}%"></span></div>
+  ${cardHTML(it,it.checked)}
+  <div class="qfoot"><button class="btn" id="quit">Beenden</button><span class="kbd">${it.q.kind==="mc"?"A–D wählen · ":""}Enter prüfen/weiter</span>
+  ${it.checked?`<button class="btn solid lg" id="next">${v.i+1<n?"Weiter":"Auswertung"}</button>`:`<button class="btn solid lg" id="check" ${h.ready(it)?"":"disabled"}>${it.q.kind==="write"?"Mit Musterlösung vergleichen":"Antwort prüfen"}</button>`}</div>
   </div>`;
-  if(!item.checked) bindAnswers(item,renderPractice);
-  app.querySelector("#quit").onclick=()=>v.i>0||item.checked?practiceDone():home();
+  h.bind(it,renderPractice,()=>{});
+  app.querySelector("#quit").onclick=()=>v.i>0||it.checked?practiceDone():home();
   const c=app.querySelector("#check"); if(c) c.onclick=checkPractice;
   const nx=app.querySelector("#next"); if(nx) nx.onclick=nextPractice;
+  if(!it.checked&&fine){const f=app.querySelector(".gap,#calc-in,#w-in"); if(f) f.focus();}
 }
-function checkPractice(){const it=view.items[view.i]; if(!it.sel.size||it.checked) return; it.checked=true; const ok=isCorrect(it); record(it.q.id,ok); if(ok) view.right++; save(); renderPractice();}
-function nextPractice(){ if(view.i+1<view.items.length){view.i++; renderPractice(); scrollTo(0,0);} else practiceDone(); }
+function finalize(it){ if(it.checked&&!it.recorded){ it.recorded=true; const ok=pass(it); record(it.q.id,ok); if(ok&&view&&view.mode==="practice") view.right++; save(); } }
+function checkPractice(){const it=view.items[view.i], h=H[it.q.kind]; if(it.checked||!h.ready(it)) return;
+  it.checked=true; if(h.onCheck) h.onCheck(it); if(it.q.kind!=="write") finalize(it); renderPractice();}
+function nextPractice(){ finalize(view.items[view.i]); if(view.i+1<view.items.length){view.i++; renderPractice(); scrollTo(0,0);} else practiceDone(); }
 function practiceDone(){
-  const v=view, done=v.items.filter(x=>x.checked), wrong=done.filter(x=>!isCorrect(x));
-  view=null;
+  const v=view; v.items.forEach(finalize); view=null;
+  const done=v.items.filter(x=>x.checked), wrong=done.filter(x=>!pass(x)), right=done.length-wrong.length;
   app.innerHTML=`<div class="view">
   <section class="result"><span class="eyebrow">${esc(v.title)} · Auswertung</span>
-  <div class="score">${v.right}/${done.length}</div>
-  <p class="lead">${done.length===0?"Du hast noch keine Frage beantwortet.":wrong.length?`${wrong.length} Fragen waren falsch. Sie landen unter „Fehler wiederholen“.`:"Alles richtig. Stark!"}</p>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    ${wrong.length?`<button class="btn solid" id="again">Falsche nochmal üben</button>`:""}
-    <button class="btn" id="home">Zur Übersicht</button></div></section>
+  <div class="score">${right}/${done.length}</div>
+  <p class="lead">${done.length===0?"Du hast noch keine Aufgabe gelöst.":wrong.length?`${wrong.length} Aufgaben waren nicht ganz richtig. Sie landen unter „Fehler wiederholen“.`:"Alles richtig. Stark!"}</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${wrong.length?`<button class="btn solid" id="again">Falsche nochmal üben</button>`:""}<button class="btn" id="home">Zur Übersicht</button></div></section>
   ${reviewHTML(wrong)}</div>`;
   scrollTo(0,0);
   app.querySelector("#home").onclick=home;
@@ -517,30 +846,31 @@ function practiceDone(){
 }
 function reviewHTML(items){
   if(!items.length) return "";
-  return `<span class="eyebrow">Das solltest du dir nochmal ansehen</span><div class="review">${items.map(it=>`<div class="rv"><p><b>${esc(it.q.q)}</b></p>
-  <p>Deine Antwort: ${it.sel.size?[...it.sel].map(i=>esc(it.q.a[i])).join("; "):"<i>keine</i>"}</p>
-  <p class="c">Richtig: ${it.q.c.map(i=>esc(it.q.a[i])).join("; ")}</p><p class="e">${esc(it.q.e)}</p></div>`).join("")}</div>`;
+  return `<span class="eyebrow">Das solltest du dir nochmal ansehen</span><div class="review">${items.map(it=>{const h=H[it.q.kind];
+    return `<div class="rv"><p><span class="pill">${KINDS[it.q.kind]}</span> <b>${esc(h.title(it))}</b></p><p class="c">${h.solution(it)}</p>${it.q.kind==="mc"?`<p class="e">${esc(it.q.e)}</p>`:""}</div>`;}).join("")}</div>`;
 }
 
-/* ---------------- EXAM ---------------- */
+/* ---------------- PRÜFUNG ---------------- */
 function exam(){
-  const per={t1:3,t2:4,t3:3,t4:2,t5:5,t6:3}; // 20 Fragen, Schwerpunkt Thema 5
+  const per={t1:2,t2:2,t3:2,t4:2,t5:4,t6:2}; // 14 Ankreuzfragen, Schwerpunkt Thema 5
   let pick=[]; for(const t in per) pick=pick.concat(shuffle(QUESTIONS.filter(q=>q.t===t)).slice(0,per[t]));
+  pick=pick.concat(shuffle(CLOZES).slice(0,4), shuffle(CALCS).slice(0,2));
   view={mode:"exam",items:shuffle(pick).map(prepare),i:0,confirm:false};
   renderExam();
 }
 function renderExam(){
-  const v=view, item=v.items[v.i], n=v.items.length, answered=v.items.filter(x=>x.sel.size).length;
+  const v=view, it=v.items[v.i], n=v.items.length, h=H[it.q.kind], answered=v.items.filter(x=>H[x.q.kind].answered(x)).length;
   app.innerHTML=`<div class="view">
-  <div class="qhead"><span class="eyebrow">Prüfungssimulation</span><span class="big">${answered} / ${n} beantwortet</span></div>
-  <div class="grid">${v.items.map((x,k)=>`<button data-go="${k}" class="${x.sel.size?"done":""} ${k===v.i?"cur":""}" aria-label="Frage ${k+1}">${k+1}</button>`).join("")}</div>
-  ${cardHTML(item,{reveal:false})}
+  <div class="qhead"><span class="eyebrow">Prüfungssimulation</span><span class="big" id="ex-count">${answered} / ${n} beantwortet</span></div>
+  <div class="grid">${v.items.map((x,k)=>`<button data-go="${k}" class="${H[x.q.kind].answered(x)?"done":""} ${k===v.i?"cur":""}" aria-label="Aufgabe ${k+1}">${k+1}</button>`).join("")}</div>
+  ${cardHTML(it,false)}
   <div class="qfoot"><button class="btn" id="prev" ${v.i?"":"disabled"}>Zurück</button>
   <button class="btn" id="submit">Abgeben</button>
   <button class="btn solid lg" id="next" ${v.i+1<n?"":"disabled"}>Weiter</button></div>
-  ${v.confirm?`<div class="confirm"><span>${answered<n?`Noch ${n-answered} Fragen offen. `:""}Prüfung wirklich abgeben?</span><span style="display:flex;gap:8px"><button class="btn" id="cancel">Weiter bearbeiten</button><button class="btn solid" id="really">Abgeben</button></span></div>`:""}
+  ${v.confirm?`<div class="confirm"><span>${answered<n?`Noch ${n-answered} Aufgaben offen. `:""}Prüfung wirklich abgeben?</span><span style="display:flex;gap:8px"><button class="btn" id="cancel">Weiter bearbeiten</button><button class="btn solid" id="really">Abgeben</button></span></div>`:""}
   </div>`;
-  bindAnswers(item,renderExam);
+  h.bind(it,renderExam,()=>{const b=app.querySelector(`[data-go="${v.i}"]`); b.classList.toggle("done",h.answered(it));
+    app.querySelector("#ex-count").textContent=`${v.items.filter(x=>H[x.q.kind].answered(x)).length} / ${n} beantwortet`;});
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{v.i=+b.dataset.go;v.confirm=false;renderExam();});
   app.querySelector("#prev").onclick=()=>{if(v.i){v.i--;renderExam();}};
   app.querySelector("#next").onclick=()=>{if(v.i+1<n){v.i++;renderExam();}};
@@ -550,16 +880,16 @@ function renderExam(){
 }
 function examDone(){
   const v=view; view=null;
-  v.items.forEach(it=>record(it.q.id,isCorrect(it)));
-  const score=v.items.filter(isCorrect).length, n=v.items.length, pass=score/n>=.8;
+  v.items.forEach(it=>record(it.q.id,pass(it)));
+  const score=v.items.filter(pass).length, n=v.items.length, ok=score/n>=.8;
   S.exams.push({score,n,at:Date.now()}); save();
-  const wrong=v.items.filter(x=>!isCorrect(x));
+  const wrong=v.items.filter(x=>!pass(x));
   app.innerHTML=`<div class="view">
   <section class="result"><span class="eyebrow">Prüfungsergebnis</span>
-  <span class="stamp ${pass?"pass":"fail"}">${pass?"Bestanden":"Nicht bestanden"}</span>
+  <span class="stamp ${ok?"pass":"fail"}">${ok?"Bestanden":"Nicht bestanden"}</span>
   <div class="score">${score}/${n}</div>
-  <p class="lead">${Math.round(score/n*100)} % richtig. Zum Bestehen brauchst du mindestens ${Math.ceil(n*.8)} richtige Antworten.</p>
-  <div class="grid" style="width:100%">${v.items.map((x,k)=>`<button disabled class="${isCorrect(x)?"r":"w"}">${k+1}</button>`).join("")}</div>
+  <p class="lead">${Math.round(score/n*100)} % richtig. Zum Bestehen brauchst du mindestens ${Math.ceil(n*.8)} richtig gelöste Aufgaben.</p>
+  <div class="grid" style="width:100%">${v.items.map((x,k)=>`<button disabled class="${pass(x)?"r":"w"}">${k+1}</button>`).join("")}</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap">${wrong.length?`<button class="btn solid" id="again">Fehler üben</button>`:""}<button class="btn" id="new">Neue Prüfung</button><button class="btn" id="home">Zur Übersicht</button></div></section>
   ${reviewHTML(wrong)}</div>`;
   scrollTo(0,0);
@@ -568,19 +898,25 @@ function examDone(){
   const a=app.querySelector("#again"); if(a) a.onclick=()=>practice(wrong.map(x=>x.q),"Prüfungsfehler");
 }
 
-/* ---------------- KEYBOARD ---------------- */
+/* ---------------- TASTATUR ---------------- */
 document.addEventListener("keydown",e=>{
   if(!view||e.metaKey||e.ctrlKey||e.altKey) return;
-  const item=view.items[view.i], k=e.key.toLowerCase();
-  const idx="abcd".indexOf(k)>=0?"abcd".indexOf(k):"1234".indexOf(k);
-  if(idx>=0 && idx<item.order.length && !item.checked){
-    const ai=item.order[idx]; item.sel.has(ai)?item.sel.delete(ai):item.sel.add(ai);
-    view.mode==="exam"?renderExam():renderPractice(); e.preventDefault();
-  } else if(k==="enter" && view.mode==="practice" && !(e.target.tagName==="BUTTON")){
-    item.checked?nextPractice():checkPractice(); e.preventDefault();
-  } else if(view.mode==="exam" && (k==="arrowright"||k==="arrowleft")){
-    view.i=Math.max(0,Math.min(view.items.length-1,view.i+(k==="arrowright"?1:-1))); renderExam();
+  const tag=e.target.tagName, typing=tag==="INPUT"&&e.target.type!=="checkbox"||tag==="TEXTAREA", k=e.key.toLowerCase();
+  if(view.mode==="fc"){
+    if(k===" "&&tag!=="BUTTON"){view.flipped=!view.flipped;renderFlash();e.preventDefault();}
+    else if(view.flipped&&(k==="arrowleft"||k==="arrowright")){rateFlash(k==="arrowright");e.preventDefault();}
+    return;
   }
+  const it=view.items[view.i];
+  if(tag==="TEXTAREA") return;
+  if(!typing && it.q.kind==="mc" && !it.checked){
+    const idx="abcd".indexOf(k)>=0?"abcd".indexOf(k):"1234".indexOf(k);
+    if(idx>=0&&idx<it.s.order.length){const ai=it.s.order[idx]; it.s.sel.has(ai)?it.s.sel.delete(ai):it.s.sel.add(ai);
+      view.mode==="exam"?renderExam():renderPractice(); e.preventDefault(); return;}
+  }
+  if(k==="enter"&&view.mode==="practice"&&tag!=="BUTTON"){ it.checked?nextPractice():checkPractice(); e.preventDefault(); }
+  else if(!typing&&view.mode==="exam"&&(k==="arrowright"||k==="arrowleft")){
+    view.i=Math.max(0,Math.min(view.items.length-1,view.i+(k==="arrowright"?1:-1))); renderExam(); }
 });
 document.getElementById("home-btn").onclick=home;
 document.getElementById("nav-home").onclick=home;
